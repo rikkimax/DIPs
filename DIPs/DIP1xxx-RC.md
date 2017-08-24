@@ -64,8 +64,10 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
   The description is in the form of ``Identifier=Value, ..., [return|argument name], ...``. Where Value can be either a type or an expression. e.g. ``__traits(getSignatureEvaluated, foo, Color=RGBA, IndexType=size_t, return)``.
   When you finish a description (except last one), the argument/function name must end in a semicolon.
   The evaluation process is a simple match, all descriptions must match and the descriptions must include every ``alias Type;`` and ``enum Type Value;`` in every signature types.
-7. Is statement is extended to support checking for if it matches a signature e.g. ``is(HorizontalImage!RGBA == Image)``.
+7. Is statement is extended to support checking for if it matches a signature e.g. ``is(HorizontalImage!RGBA : Image)``.
   This is equivalent to ``__traits(compiles, Image(HorizontalImage!RGBA.init))``.
+8. Template Argument is extended to support checking if is signature e.g. ``void foo(IImage:Image)(IImage theImage) {``.
+  See ``is(T:Signature)`` for more information.
 
 ### Breaking changes / deprecation process
 
