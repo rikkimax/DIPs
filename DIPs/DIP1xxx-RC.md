@@ -69,6 +69,30 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
 The primary breaking change is the token ``signature`` is becomming a keyword.
 Existing code that uses it would need to rename existing symbols and variables but nothing requiring major changes.
 
+### Grammar changes
+
+Signatures are aggregates and require very few changes. THe new construct is parsed from the keyword `signature`, just like classes are parsed from `class`.
+
+```diff
+AggregateDeclaration:
+    ClassDeclaration
+    InterfaceDeclaration
+    StructDeclaration
+    UnionDeclaration
++    SignatureDeclaration 
+
++ SignatureDeclaration:
++    signature Identifier AggregateBody
+```
+
+To this, a trait identifier is added: 
+
+```diff
+TraitsKeyword:
+    ...
++    getSignatureEvaluated 
+```
+
 ### Examples
 
 #### Image library
