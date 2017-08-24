@@ -44,10 +44,11 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
     3. There may be variables, methods and static functions. Operator overloads are also valid. A signature copies what structs supports here.
     4. May be templated. May include exactly one to be initialize value. Valid: ``signature``, ``signature(T)``, ``signature(T, U=Unqual!T)``; Invalid: ``signature(T, U)``.
 
-2. Implementation of ``alias Type this``. Where Type is a signature.
+2. Implementation of ``alias Signature this``.
   This will not cause conflicts like in other situations.
   A definition of one thing via ``alias Tupe this;`` can be duplicated, same situation with methods, enums and aliases.
   If a variable is declared multiple times with different types, this is an error at the child signature scope.
+  Initiating the signature is not explicitly required as it will be automatically done so.
     
 3. Dynamic alias mapping via ``alias Type;``.
   Alias T set from the source type as ``Source.Type``.
