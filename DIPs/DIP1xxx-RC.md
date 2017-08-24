@@ -71,7 +71,7 @@ Existing code that uses it would need to rename existing symbols and variables b
 
 ### Grammar changes
 
-Signatures are aggregates and require very few changes. THe new construct is parsed from the keyword `signature`, just like classes are parsed from `class`.
+Signatures are aggregates and require very few changes. The new construct is parsed from the keyword `signature`, just like classes are parsed from `class`.
 
 ```diff
 AggregateDeclaration:
@@ -83,6 +83,10 @@ AggregateDeclaration:
 
 + SignatureDeclaration:
 +    signature Identifier AggregateBody
++    SignatureTemplateDeclaration
+
++ SignatureTemplateDeclaration
++    singature Identifier TemplateParameters Constraint AggregateBody
 ```
 
 To this, a trait identifier is added: 
@@ -92,6 +96,8 @@ TraitsKeyword:
     ...
 +    getSignatureEvaluated 
 ```
+
+(TODO <identifier> part of the new traits argument)
 
 ### Examples
 
