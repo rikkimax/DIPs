@@ -71,7 +71,7 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
 
 ### Breaking changes / deprecation process
 
-The primary breaking change is the token ``signature`` is becomming a keyword.
+The primary breaking change is the token ``signature`` is becoming a keyword.
 Existing code that uses it would need to rename existing symbols and variables but nothing requiring major changes.
 
 ### Examples
