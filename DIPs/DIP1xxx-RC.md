@@ -96,34 +96,50 @@ signature UniformImage(T) {
     alias ImageBase!T this;
   
     static if (is(T:IndexedImage)) {
-        Color opIndex(IndexType i) {
-            return IndexedImage(this)[cast(IndexType)(i % width), cast(IndexType)floor(i / width)];
+        static if (__traits(compiles, {T t; Color c = t.opIndex(IndexType.init);})) {
+            Color opIndex(IndexType i);
+        } else {
+            Color opIndex(IndexType i) {
+                return IndexedImage(this)[cast(IndexType)(i % width), cast(IndexType)floor(i / width)];
+            }
         }
-
-        void opIndexAssign(Color v, IndexType i) {
-            IndexedImage(this)[cast(IndexType)(i % width), cast(IndexType)floor(i / width)] = v;
-        }
-    } else {
+        
+        static if (__traits(compiles, {T t; t.opIndexAssign(Color.init, IndexType.init);})) {
+           void opIndexAssign(Color v, IndexType i);
+        } else {
+            void opIndexAssign(Color v, IndexType i) {
+                IndexedImage(this)[cast(IndexType)(i % width), cast(IndexType)floor(i / width)] = v;
+            }
+        }
+    } else {
         Color opIndex(IndexType i);
         void opIndexAssign(Color v, IndexType i);
     }
 }
 
 signature IndexedImage(T) {
-    alias ImageBase!T this;
-  
+    alias ImageBase!T this;
+    
     static if (is(T:UniformImage)) {
-        Color opIndex(IndexType x, IndexType y) {
-            return UniformImage(this)[y*width+x];
-        }
-
-        void opIndexAssign(Color v, IndexType x, IndexType y) {
-            UniformImage(this)[y*width+x] = v;
-        }
-    } else {
-        Color opIndex(IndexType x, IndexType y);
-        void opIndexAssign(Color v, IndexType x, IndexType y);
-    }
+        static if (__traits(compiles, {T t; Color c = t.opIndex(IndexType.init, IndexType.init);})) {
+            Color opIndex(IndexType x, IndexType y);
+        } else {
+            Color opIndex(IndexType x, IndexType y) {
+                return UniformImage(this)[y*width+x];
+            }
+        }
+        
+        static if (__traits(compiles, {T t; t.opIndexAssign(Color.init, IndexType.init, IndexType.init);})) {
+           void opIndexAssign(Color v, IndexType i);
+        } else {
+            void opIndexAssign(Color v, IndexType x, IndexType y) {
+                UniformImage(this)[y*width+x] = v;
+            }
+        }
+    } else {
+        Color opIndex(IndexType x, IndexType y);
+        void opIndexAssign(Color v, IndexType x, IndexType y);
+    }
 }
 
 signature Image(T) {
