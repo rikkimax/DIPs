@@ -44,16 +44,18 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
     3. There may be variables, methods and static functions. Operator overloads are also valid. A signature copies what structs supports here.
     4. May be templated. May include exactly one to be initialize value. Valid: ``signature``, ``signature(T)``, ``signature(T, U=Unqual!T)``; Invalid: ``signature(T, U)``.
 
-2. Implementation of ``alias this``.
-  This will not cause conflicts like in other situations. The implementation can be fairly dumb.
-  A definition of one thing via ``alias T;`` can be duplicated, same situation with methods. But not static functions.
-  If a variable is declared multiple times with different types, this is an error.
+2. Implementation of ``alias Type this``. Where Type is a signature.
+  This will not cause conflicts like in other situations.
+  A definition of one thing via ``alias Tupe this;`` can be duplicated, same situation with methods, enums and aliases.
+  If a variable is declared multiple times with different types, this is an error at the child signature scope.
     
 3. Dynamic alias mapping via ``alias T;``.
   Alias T set from the source type as ``Source.T``.
   Only valid within a signature.
-  
-4. Less important but existing nontheless template ``if (signature)``.
+4. Dynamic enum mapping via ``enum Type T;``.
+  Enum T set from the source type as ``Source.T``.
+  Only valid within a signature.
+ 
 5. Trait evaluation to get/initialize a template instance of a function for a specific signature initialization.
   ``RT [function|delegate] (Args) pointer = __traits(getSignatureEvaluated, <function/method>, <description>);``
   It provides a function pointer or delegate to a function or method who uses signatures. The function/method passed must have template arguments already evaluated.<br/>
@@ -77,46 +79,52 @@ __Definitions of what an image is:__
 
 ```D
 signature ImageBase(T) {
-  alias Color;
-  alias IndexType;
+    alias Color;
+    alias IndexType;
 
-  @property {
-    IndexType width();
-    IndexType height();
-  }
+    @property {
+        IndexType width();
+        IndexType height();
+    }
 }
 
 signature UniformImage(T) {
-  alias ImageBase!T this;
+    alias ImageBase!T this;
   
-  Color opIndex(IndexType i) if (signature);
-  Color opIndex(IndexType i) if (is(T:IndexedImage)) {
-    return IndexedImage(this)[cast(IndexType)(i % width), cast(IndexType)floor(i / width)];
-  }
-  
-  void opIndexAssign(Color v, IndexType i) if (signature);
-  void opIndexAssign(Color v, IndexType i) if (is(T:IndexedImage)) {
-    IndexedImage(this)[cast(IndexType)(i % width), cast(IndexType)floor(i / width)] = v;
-  }
+    static if (is(T:IndexedImage)) {
+        Color opIndex(IndexType i) {
+            return IndexedImage(this)[cast(IndexType)(i % width), cast(IndexType)floor(i / width)];
+        }
+
+        void opIndexAssign(Color v, IndexType i) {
+            IndexedImage(this)[cast(IndexType)(i % width), cast(IndexType)floor(i / width)] = v;
+        }
+    } else {
+        Color opIndex(IndexType i);
+        void opIndexAssign(Color v, IndexType i);
+    }
 }
 
 signature IndexedImage(T) {
-  alias ImageBase!T this;
-  
-  Color opIndex(IndexType x, IndexType y) if (signature);
-  Color opIndex(IndexType x, IndexType y) if (is(T:UniformImage)) {
-    return UniformImage(this)[y*width+x];
-  }
-  
-  void opIndexAssign(Color v, IndexType x, IndexType y) if (signature);
-  void opIndexAssign(Color v, IndexType x, IndexType y) if (is(T:UniformImage)) {
-    UniformImage(this)[y*width+x] = v;
-  }
+    alias ImageBase!T this;
+  
+    static if (is(T:UniformImage)) {
+        Color opIndex(IndexType x, IndexType y) {
+            return UniformImage(this)[y*width+x];
+        }
+
+        void opIndexAssign(Color v, IndexType x, IndexType y) {
+            UniformImage(this)[y*width+x] = v;
+        }
+    } else {
+        Color opIndex(IndexType x, IndexType y);
+        void opIndexAssign(Color v, IndexType x, IndexType y);
+    }
 }
 
 signature Image(T) {
-  alias UniformImage!T this;
-  alias IndexedImage!T this;
+    alias UniformImage!T this;
+    alias IndexedImage!T this;
 }
 ```
 
@@ -127,9 +135,9 @@ void rotate(scope Image image, float rotation) { /* ... */ }
 void rotate(scope Image image, float rotation) if (is(Image.IndexType == size_t)) { /* ... */ }
 
 void main() {
-  HorizontalStorage!RGBA source = HorizontalStorage(/*width*/100, /*height*/100);
-  // ... fill?
-  source.rotate(80f);
+    HorizontalStorage!RGBA source = HorizontalStorage(/*width*/100, /*height*/100);
+    // ... fill?
+    source.rotate(80f);
 }
 ```
 
@@ -141,25 +149,25 @@ If the return type had scope added, it would be malloc'ed and free'd immediately
 
 ```D
 Image myCreator() {
-  HorizontalStorage!RGBA source = HorizontalStorage(/*width*/100, /*height*/100);
-  // ... fills /some how/
-  return source;
+    HorizontalStorage!RGBA source = HorizontalStorage(/*width*/100, /*height*/100);
+    // ... fills /some how/
+    return source;
 }
 
 scope Image myCreator2() {
-  HorizontalStorage!RGBA source = HorizontalStorage(/*width*/100, /*height*/100);
-  // ... fills /some how/
-  return source;
+    HorizontalStorage!RGBA source = HorizontalStorage(/*width*/100, /*height*/100);
+    // ... fills /some how/
+    return source;
 }
 
 void main() {
-  Image first = myCreator();
-  scope Image second = myCreator2();
-  
-  /+
+    Image first = myCreator();
+    scope Image second = myCreator2();
+
+    /+
     scope(exit)
       free(second.__context);
-  +/
+    +/
 }
 
 ```
