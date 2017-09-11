@@ -47,12 +47,13 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
     5. A signature may inherit from others, similar in syntax to interfaces in this manner. However the diamond problem is not valid with signatures. If a field/method/enum/alias is duplicated and is similar, it can be ignored. If it is different (e.g. different types or different attributes) then it is an error at the child signature.
    
 2. Extension to ``typeof(Signature, Identifier=Value, ...)``. Where Value can be a type or expression. Evaluates out the hidden arguments to a signature.
-3. Is expression is extended to support checking for if it matches a signature e.g. ``is(HorizontalImage!RGBA : Image)``.
+3. Is expression is extended to support checking for if it matches a specific signature e.g. ``is(HorizontalImage!RGBA : Image)``.
   See std.traits : TemplateOf for the equivalent template check.
-4. Template Argument is extended to support checking if is signature e.g. ``void foo(IImage:Image)(IImage theImage) {``.
+4. Is expression is extended to support checking if a given type is a signature. Unresolved (the hidden arguments) will match ``is(T==signature)``. Resolved signatures will match ``is(T:signature)``. It is unexpected that a library/framework can do much with the prior.
+5. Template Argument is extended to support checking if is signature e.g. ``void foo(IImage:Image)(IImage theImage) {``.
   See ``is(T:Signature)`` for more information.
-5. Scope attribute on function arguments and return type may not be inferred for a signature, if it is the return type or an argument.
-6. A signature may be used as the return type without resolving the hidden arguments. However it will act like auto does, only with a requirement of it matching ``is(T:Signature)``.
+6. Scope attribute on function arguments and return type may not be inferred for a signature, if it is the return type or an argument.
+7. A signature may be used as the return type without resolving the hidden arguments. However it will act like auto does, only with a requirement of it matching ``is(T:Signature)``.
 
 ### Breaking changes / deprecation process
 
