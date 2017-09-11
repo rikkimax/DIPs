@@ -188,6 +188,23 @@ For everything else, it gets more expensive what with a memory allocation either
 
 At the current time it is expected that storage of signature instances will not occur on the heap. However it is supported like all of D's types.
 
+### Does this work with -betterC?
+Yes! It will also work from C!
+
+The ABI is as follows:
+
+```D
+struct Signature {
+    void* __context;
+    Fields... fields;
+    Methods... methods;
+}
+```
+
+Where a method has a type of function, not a delegate. You will need ``extern(C)`` them in the signature to make it work however if it is comming from C.
+
+A word of caution for you is that unless a struct instance is already allocated on the heap and it isn't going into a scope variable then it will error out. Since no GC is available to handle allocation + cleanup.
+
 ### But what about...?
 There are definately other ways that this could have been done. The problem is, it needs to be first class citizen along side classes, structs and unions. And not elongated to library like vector types are.
 
