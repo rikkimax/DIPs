@@ -129,7 +129,7 @@ signature Image(this T) : UniformImage, IndexedImage {}
 __Example usage:__
 
 ```D
-void rotate(IImage:Image)(scope IImage image, float rotation) { /* ... */ }
+void rotate(IImage:Image)(scope IImage image, float rotation) if (!is(IImage.IndexType == size_t)) { /* ... */ }
 void rotate(IImage:Image)(scope IImage image, float rotation) if (is(IImage.IndexType == size_t)) { /* ... */ }
 
 void main() {
