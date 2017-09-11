@@ -16,6 +16,7 @@ It provides dynamic templating of types while appearing as one to the end progra
 ### Links
 
 TODO: Ocaml/SML
+TODO: Rust traits (significantly more limited and basically are interfaces).
 
 ## Rationale
 
@@ -169,6 +170,23 @@ void main() {
 }
 
 ```
+
+## FAQ
+
+### Why not extend interfaces?
+Interfaces are designed to list methods that must be implemented. In some languages they may even list fields. However they are extended and manipulated. Signatures are on the other hand, extend and manipulate a given type into a new form. They are not only fully aware of the implementation, but instead are free to manipulate it into a very nice and usable form by the user.
+
+### Isn't this costly?
+No! If the implementation type is a struct and passed to a scope variable, it is nearly free. The most expensive thing is copying some pointers over into a region of the stack.
+
+For everything else, it gets more expensive what with a memory allocation either malloc'd or GC'd. Of course you could do all that and only pay the price of the vtable creation.
+
+At the current time it is expected that storage of signature instances will not occur on the heap. However it is supported like all of D's types.
+
+### But what about...?
+There are definately other ways that this could have been done. The problem is, it needs to be first class citizen along side classes, structs and unions. And not elongated to library like vector types are.
+
+It has to work well with other language features. If you can do it better, show us!
 
 ## Copyright & License
 
