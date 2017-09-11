@@ -135,7 +135,7 @@ signature IndexedImage(this T) : ImageBase!T {
     }
 }
 
-signature Image(T) : UniformImage, IndexedImage {}
+signature Image(this T) : UniformImage, IndexedImage {}
 ```
 
 __Example usage:__
