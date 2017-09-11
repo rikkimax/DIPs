@@ -34,13 +34,14 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
 ### Additions
 
 1. The signature type.
+
     1. Is implicitly constructed given an appropriate class or struct instance.
     
         1. Implicit construction of a signature may occur during assignment or passing as an argument to a function call.
         2. Implicit construction works in two forms. First as direct assignment and patching for class instances and pointers to structs. Second is a memory allocation and move of the struct instance, should it be copyable. Where it will be assigned and then patched for the given vtable.
         3. If the implicit construction is going into a scope'd variable, no allocation needs to take place unless it is being returned from a function. If it is being returned from a function it will be malloc'd and then free'd when it goes out of scope.
         4. Should a struct instance not be going into a scope'd variable (or being returned without scope) it will be allocated into GC owned memory where it will be moved into, should it be copyable. If it cannot be copied, it is an error.
-  
+
     2. There may be fields, methods and static functions. Operator overloads are also valid. A signature copies what structs supports here.
     3. There are hidden arguments to a signature, these are aliases and enums. Provided by the syntax ``alias Type;`` and ``enum Value;`` or ``enum Type Value;``. Where it is inferred during implicit construction to come from the source type, in the form of ``Source.Type`` or ``Source.Value``.
     4. Use ``this T`` template argument to provide the implementation instance. Must be last. Can be used after ``T...`` argument.
