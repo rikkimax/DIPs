@@ -33,7 +33,8 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
 
 ### Additions
 
-1. The signature type.<br/>
+1. The signature type.
+
     1. Is implicitly constructed given an appropriate class or struct instance.<br/>
         1. Implicit construction of a signature may occur during assignment or passing as an argument to a function call.<br/>
         2. Implicit construction works in two forms. First as direct assignment and patching for class instances and pointers to structs. Second is a memory allocation and move of the struct instance, should it be copyable. Where it will be assigned and then patched for the given vtable.<br/>
