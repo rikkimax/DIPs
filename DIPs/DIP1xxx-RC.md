@@ -42,7 +42,7 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
   
     2. There may be fields, methods and static functions. Operator overloads are also valid. A signature copies what structs supports here.
     3. There are hidden arguments to a signature, these are aliases and enums. Provided by the syntax ``alias Type;`` and ``enum Value;`` or ``enum Type Value;``. Where it is inferred during implicit construction to come from the source type, in the form of ``Source.Type`` or ``Source.Value``.
-    4. Use ``this T`` template argument to provide the implementation instance. Must be last. Can be used after ``T...`` argument.
+    4. Use ``this T`` template argument to provide the implementation instance. Must be last. Can be used after ``T...`` argument.
         Can only be assigned by the compiler. Will be ignored by template initialization syntax. Most signatures would not have any template arguments other than ``this T``.
     5. A signature may inherit from others, similar in syntax to interfaces in this manner. However the diamond problem is not valid with signatures. If a field/method/enum/alias is duplicated and is similar, it can be ignored. If it is different (e.g. different types or different attributes) then it is an error at the child signature.
    
