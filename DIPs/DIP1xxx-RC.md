@@ -178,7 +178,7 @@ void main() {
 Interfaces are designed to list methods that must be implemented. In some languages they may even list fields. However they are extended and manipulated. Signatures are on the other hand, extend and manipulate a given type into a new form. They are not only fully aware of the implementation, but instead are free to manipulate it into a very nice and usable form by the user.
 
 ### Shouldn't this work for arrays and unions?
-Sure they could. Unions by themselves are mostly useless and unsafe. Arrays can't have methods. They can be emulated via free-functions with UFCS. But over all it just complicates things for this DIP. It can be added later on should it be desired.
+Sure they could. Unions by themselves are mostly useless and unsafe. Arrays can't have methods. They can be emulated via free-functions with UFCS. But over all it just complicates things for this DIP. It can be added later on should it be desired. In the mean time, structs make excellant wrappers.
 
 ### Isn't this costly?
 No! If the implementation type is a struct and passed to a scope variable, it is nearly free. The most expensive thing is copying some pointers over into a region of the stack.
