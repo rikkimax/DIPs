@@ -41,16 +41,10 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
         4. Should a struct instance not be going into a scope'd variable (or being returned without scope) it will be allocated into GC owned memory where it will be moved into, should it be copyable.
   
     2. There may be fields, methods and static functions. Operator overloads are also valid. A signature copies what structs supports here.
-    3. Dynamic alias mapping via ``alias Type;``.
-        Alias T set from the source type as ``Source.Type``.
-        Only valid within a signature.
-    4. Dynamic enum mapping via ``enum Type Value;`` or ``enum Value;``.
-        Enum T set from the source type as ``Source.Value``.
-        Only valid within a signature.
-    5. Use ``this T`` template argument to provide the implementation instance. Must be last. Can be used after ``T...`` argument.
+    3. There are hidden arguments to a signature, these are aliases and enums. Provided by the syntax ``alias Type;`` and ``enum Value;`` or ``enum Type Value;``. Where it is inferred during implicit construction to come from the source type, in the form of ``Source.Type`` or ``Source.Value``.
+    4. Use ``this T`` template argument to provide the implementation instance. Must be last. Can be used after ``T...`` argument.
         Can only be assigned by the compiler. Will be ignored by template initialization syntax. Most signatures would not have any template arguments other than ``this T``.
-    6. A signature may inherit from others, similar in syntax to interfaces in this manner. However the diamond problem is not valid with signatures. If a field/method/enum/alias is duplicated and is similar, it can be ignored. If it is different (e.g. different types or different attributes) then it is an error at the child signature.
-    7. It may be used as a return type without resolving its instance e.g. ``typeof(Signature, Identifier=Value, ...)`` as it will act as ``auto`` does here. Except instead of allowing any type it will only allow a type that resolves to ``is(ReturnType:Signature)``.
+    5. A signature may inherit from others, similar in syntax to interfaces in this manner. However the diamond problem is not valid with signatures. If a field/method/enum/alias is duplicated and is similar, it can be ignored. If it is different (e.g. different types or different attributes) then it is an error at the child signature.
    
 2. Extension to ``typeof(Signature, Identifier=Value, ...)``. Where Value can be a type or expression. Evaluates out the hidden arguments to a signature.
 3. Is expression is extended to support checking for if it matches a signature e.g. ``is(HorizontalImage!RGBA : Image)``.
@@ -58,6 +52,7 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
 4. Template Argument is extended to support checking if is signature e.g. ``void foo(IImage:Image)(IImage theImage) {``.
   See ``is(T:Signature)`` for more information.
 5. Scope attribute on function arguments and return type may not be inferred for a signature, if it is the return type or an argument.
+6. A signature may be used as the return type without resolving the hidden arguments. However it will act like auto does, only with a requirement of it matching ``is(T:Signature)``.
 
 ### Breaking changes / deprecation process
 
