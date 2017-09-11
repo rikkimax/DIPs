@@ -103,7 +103,7 @@ signature UniformImage(this T) : ImageBase {
     }
 }
 
-signature IndexedImage(this T) : ImageBase!T {
+signature IndexedImage(this T) : ImageBase {
     static if (is(T:UniformImage)) {
         static if (__traits(compiles, {T t; Color c = t.opIndex(IndexType.init, IndexType.init);})) {
             Color opIndex(IndexType x, IndexType y);
