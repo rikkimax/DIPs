@@ -47,10 +47,8 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
     4. Dynamic enum mapping via ``enum Type Value;`` or ``enum Value;``.
         Enum T set from the source type as ``Source.Value``.
         Only valid within a signature.
-
     5. Use ``this T`` template argument to provide the implementation instance. Must be last. Can be used after ``T...`` argument.
-    Can only be assigned by the compiler. Will be ignored by template initialization syntax. Most signatures would not have any template arguments other than ``this T``.
-
+        Can only be assigned by the compiler. Will be ignored by template initialization syntax. Most signatures would not have any template arguments other than ``this T``.
     6. A signature may inherit from others, similar in syntax to interfaces in this manner. However the diamond problem is not valid with signatures. If a field/method/enum/alias is duplicated and is similar, it can be ignored. If it is different (e.g. different types or different attributes) then it is an error at the child signature.
     7. It may be used as a return type without resolving its instance e.g. ``typeof(Signature, Identifier=Value, ...)`` as it will act as ``auto`` does here. Except instead of allowing any type it will only allow a type that resolves to ``is(ReturnType:Signature)``.
    
