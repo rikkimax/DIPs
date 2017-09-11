@@ -46,6 +46,7 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
     4. Use ``this T`` template argument to provide the implementation instance. Must be last. Can be used after ``T...`` argument.
         Can only be assigned by the compiler. Will be ignored by template initialization syntax. Most signatures would not have any template arguments other than ``this T``.
     5. A signature may inherit from others, similar in syntax to interfaces in this manner. However the diamond problem is not valid with signatures. If a field/method/enum/alias is duplicated and is similar, it can be ignored. If it is different (e.g. different types or different attributes) then it is an error at the child signature.
+    6. A signature may be null. Because of this ``v is null`` works also for signatures instances.
    
 2. Extension to ``typeof(Signature, Identifier=Value, ...)``. Where Value can be a type or expression. Evaluates out the hidden arguments to a signature.
 3. Is expression is extended to support checking for if it matches a specific signature e.g. ``is(HorizontalImage!RGBA : Image)``.
