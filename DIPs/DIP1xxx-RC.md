@@ -59,6 +59,8 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
                  implementation
                 /              \
             signature ----- signature
+                |               |
+            Signature       Signature
 
 4. Template Argument is extended to support checking if is signature e.g. ``void foo(IImage:Image)(IImage theImage) {``.
   See ``is(T:Signature)`` for more information.
