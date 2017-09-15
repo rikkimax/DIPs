@@ -148,6 +148,21 @@ void main() {
 }
 ```
 
+Alternatively to implementing rotate using template argument, if you only need one type of the ``Image`` signature you could expand it via ``typeof``. Via:
+
+```D
+void rotate(scope typeof(Image, Color=RGBA, IndexType=size_t) image, float rotation) { /* ... */ }
+
+void main() {
+    HorizontalStorage!RGBA source = HorizontalStorage(/*width*/100, /*height*/100);
+    // ... fill?
+    source.rotate(80f);
+
+}
+```
+
+In the example above with HorizontalStorage with ``RGBA`` as the color and as defined by it using the ``IndexType`` as size_t.
+
 ## FAQ
 
 ### Why not extend interfaces?
