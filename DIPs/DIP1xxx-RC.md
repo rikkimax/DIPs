@@ -62,7 +62,6 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
   See ``is(T:Signature)`` for more information.
 6. A signature may be used as the return type without resolving the hidden arguments. However it will act like auto does, only with a requirement of it matching ``is(T:Signature)``.
 7. Scope attribute on function arguments and return type may not be inferred for a signature, if it is the return type or an argument.
-8. Version statement allows a single is expression to exist as the condition.
 
 ### Breaking changes / deprecation process
 
@@ -95,7 +94,7 @@ signature ImageBase() {
 }
 
 signature UniformImage(this T) : ImageBase {
-    version(is(T:IndexedImage)) {
+    static if (is(T:IndexedImage)) {
         Color opIndex(IndexType i) {
             // !__traits(compiles, {T t; Color c = t.opIndex(IndexType.init);})
             return IndexedImage(this)[cast(IndexType)(i % width), cast(IndexType)floor(i / width)];
@@ -112,7 +111,7 @@ signature UniformImage(this T) : ImageBase {
 }
 
 signature IndexedImage(this T) : ImageBase {
-    version(is(T:UniformImage)) {
+    static if (is(T:UniformImage)) {
         Color opIndex(IndexType x, IndexType y) {
             // !__traits(compiles, {T t; Color c = t.opIndex(IndexType.init, IndexType.init);})
             return UniformImage(this)[y*width+x];
