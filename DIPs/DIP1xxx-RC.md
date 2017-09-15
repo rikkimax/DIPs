@@ -59,7 +59,6 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
 4. Template Argument is extended to support checking if is signature e.g. ``void foo(IImage:Image)(IImage theImage) {``.
   See ``is(T:Signature)`` for more information.
 5. A signature may be used as the return type without resolving the hidden arguments. However it will act like auto does, only with a requirement of it matching ``is(T:Signature)``.
-6. Scope attribute on function arguments and return type may not be inferred for a signature, if it is the return type or an argument.
 
 ### Breaking changes / deprecation process
 
