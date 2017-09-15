@@ -47,6 +47,9 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
     5. A signature may inherit from others, similar in syntax to interfaces in this manner. However the diamond problem is not valid with signatures. If a field/method/enum/alias is duplicated and is similar, it can be ignored. If it is different (e.g. different types or different attributes) then it is an error at the child signature.
     6. A signature may be null. Because of this ``v is null`` works also for signatures instances.
     7. Signatures may be cast down for their inheritence. This can be computed statically and does not require any runtime knowledge. However they may not be cast up again. Rules regarding const, immutabe, shared ext. still apply like any other type.
+    8. Method bodies if provided give a "default" implementation should it not be available. Removes conditionally defining them.
+       - If the given method is on the source type, then the body is ignored as normal.
+       - If documented with a body this should be treated as documentation for what it should do.
    
 2. Extension to ``typeof(Signature, Identifier=Value, ...)``. Where Value can be a type or expression. Evaluates out the hidden arguments to a signature.
 3. Is expression is extended to support checking for if it matches a specific signature e.g. ``is(HorizontalImage!RGBA : Image)``.
@@ -85,21 +88,15 @@ signature ImageBase() {
 
 signature UniformImage(this T) : ImageBase {
     version(is(T:IndexedImage)) {
-        static if (__traits(compiles, {T t; Color c = t.opIndex(IndexType.init);})) {
-            Color opIndex(IndexType i);
-        } else {
-            Color opIndex(IndexType i) {
-                return IndexedImage(this)[cast(IndexType)(i % width), cast(IndexType)floor(i / width)];
-            }
+        Color opIndex(IndexType i) {
+            // !__traits(compiles, {T t; Color c = t.opIndex(IndexType.init);})
+            return IndexedImage(this)[cast(IndexType)(i % width), cast(IndexType)floor(i / width)];
         }
         
-        static if (__traits(compiles, {T t; t.opIndexAssign(Color.init, IndexType.init);})) {
-           void opIndexAssign(Color v, IndexType i);
-        } else {
-            void opIndexAssign(Color v, IndexType i) {
-                IndexedImage(this)[cast(IndexType)(i % width), cast(IndexType)floor(i / width)] = v;
-            }
-        }
+        void opIndexAssign(Color v, IndexType i) {
+            // !__traits(compiles, {T t; t.opIndexAssign(Color.init, IndexType.init);})
+            IndexedImage(this)[cast(IndexType)(i % width), cast(IndexType)floor(i / width)] = v;
+        }
     } else {
         Color opIndex(IndexType i);
         void opIndexAssign(Color v, IndexType i);
@@ -108,21 +105,15 @@ signature UniformImage(this T) : ImageBase {
 
 signature IndexedImage(this T) : ImageBase {
     version(is(T:UniformImage)) {
-        static if (__traits(compiles, {T t; Color c = t.opIndex(IndexType.init, IndexType.init);})) {
-            Color opIndex(IndexType x, IndexType y);
-        } else {
-            Color opIndex(IndexType x, IndexType y) {
-                return UniformImage(this)[y*width+x];
-            }
-        }
-        
-        static if (__traits(compiles, {T t; t.opIndexAssign(Color.init, IndexType.init, IndexType.init);})) {
-           void opIndexAssign(Color v, IndexType i);
-        } else {
-            void opIndexAssign(Color v, IndexType x, IndexType y) {
-                UniformImage(this)[y*width+x] = v;
-            }
-        }
+        Color opIndex(IndexType x, IndexType y) {
+            // !__traits(compiles, {T t; Color c = t.opIndex(IndexType.init, IndexType.init);})
+            return UniformImage(this)[y*width+x];
+        }
+
+        void opIndexAssign(Color v, IndexType x, IndexType y) {
+            // !__traits(compiles, {T t; t.opIndexAssign(Color.init, IndexType.init, IndexType.init);})
+            UniformImage(this)[y*width+x] = v;
+        }
     } else {
         Color opIndex(IndexType x, IndexType y);
         void opIndexAssign(Color v, IndexType x, IndexType y);
