@@ -72,13 +72,21 @@ Existing code that uses it would need to rename existing symbols and variables b
 ### Examples
 
 #### Image library
+The challenge for performance in image libraries, is two-fold. First you either use classes and impose strong costs associated with lookups or use a templated approach which loses the ability to move any implementation around.
+
+An image library using signatures allows to custom many different attributes. In the following example, we assume the color and index type can be changed by the implementation. This allows you to support both canvas-style API in which negative values are valid and other color types.
 
 __Definitions of what an image is:__
+
+There are four signatures defined in the following code. The first is ``ImageBase`` which defines the color, index type, width and height that an image implementation must posses. The next two signatures ``UniformImage`` and ``IndexedImage`` provide variants of what constitutes an image, specifically about how it is indexed. The last signature ``Image`` has no additional members, but defines an image to include both ``UnifromImage`` and ``IndexedImage`` indexing. Since both inherit from ``ImageBase`` so does ``Image``.
 
 ```D
 signature ImageBase() {
     alias Color;
     alias IndexType;
+    
+    static assert(isColor!Color, "An image Color must match ...isColor");
+    static assert(isIntegral!IndexType, "An image IndexType must be an integer");
 
     @property {
         IndexType width();
@@ -123,7 +131,11 @@ signature IndexedImage(this T) : ImageBase {
 signature Image(this T) : UniformImage, IndexedImage {}
 ```
 
+Of importance is to note how ``this T`` is used inside the template argument of the signature in both ``UniformImage`` and ``IndexedImage``. This provides the implementation type, it is optional but when it is used in these signatures it allows you to have a conditional method body. This is done by the extension to the version statement and having the method body being the default should the implementation not have said method prototype.
+
 __Example usage:__
+
+In the example usage code, two functions are defined (without the bodies since that is a complex operation). These functions are used to manipulate an image in some form. Of note is that the signature used as an argument is specified as part of the template argument and not implicit. But the creation as it is passed is.
 
 ```D
 void rotate(IImage:Image)(scope IImage image, float rotation) if (!is(IImage.IndexType == size_t)) { /* ... */ }
@@ -134,37 +146,6 @@ void main() {
     // ... fill?
     source.rotate(80f);
 }
-```
-
-__Another use case:__
-
-HorizontalStorage has postblit disabled. Yet the image was copied and returned via the heap.
-It was moved into a newly GC'd block of memory prior to returning.
-If the return type had scope added, it would be malloc'ed and free'd immediately upon the caller went out of scope.
-
-```D
-Image myCreator() {
-    HorizontalStorage!RGBA source = HorizontalStorage(/*width*/100, /*height*/100);
-    // ... fills /some how/
-    return source;
-}
-
-scope Image myCreator2() {
-    HorizontalStorage!RGBA source = HorizontalStorage(/*width*/100, /*height*/100);
-    // ... fills /some how/
-    return source;
-}
-
-void main() {
-    Image first = myCreator();
-    scope Image second = myCreator2();
-
-    /+
-    scope(exit)
-      free(second.__context);
-    +/
-}
-
 ```
 
 ## FAQ
