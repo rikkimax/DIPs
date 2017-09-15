@@ -52,10 +52,14 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
 3. Is expression is extended to support checking for if it matches a specific signature e.g. ``is(HorizontalImage!RGBA : Image)``.
   See std.traits : TemplateOf for the equivalent template check.
 4. Is expression is extended to support checking if a given type is a signature. Unresolved (the hidden arguments) will match ``is(T==signature)``. Resolved signatures will match ``is(T:signature)``. It is unexpected that a library/framework can do much with the prior.
+    - Evaluated signatures via ``typeof(Signature, Identifier=Value, ...)`` must be compared using ``is(T==U)``, where U is the evaluated type.
+    - If the parent is a version statement inside a signature and the signature is initiated by a signature of the castable type, then it will return false.
+
 5. Template Argument is extended to support checking if is signature e.g. ``void foo(IImage:Image)(IImage theImage) {``.
   See ``is(T:Signature)`` for more information.
 6. A signature may be used as the return type without resolving the hidden arguments. However it will act like auto does, only with a requirement of it matching ``is(T:Signature)``.
 7. Scope attribute on function arguments and return type may not be inferred for a signature, if it is the return type or an argument.
+8. Version statement allows a single is expression to exist as the condition.
 
 ### Breaking changes / deprecation process
 
@@ -80,7 +84,7 @@ signature ImageBase() {
 }
 
 signature UniformImage(this T) : ImageBase {
-    static if (is(T:IndexedImage)) {
+    version(is(T:IndexedImage)) {
         static if (__traits(compiles, {T t; Color c = t.opIndex(IndexType.init);})) {
             Color opIndex(IndexType i);
         } else {
@@ -103,7 +107,7 @@ signature UniformImage(this T) : ImageBase {
 }
 
 signature IndexedImage(this T) : ImageBase {
-    static if (is(T:UniformImage)) {
+    version(is(T:UniformImage)) {
         static if (__traits(compiles, {T t; Color c = t.opIndex(IndexType.init, IndexType.init);})) {
             Color opIndex(IndexType x, IndexType y);
         } else {
