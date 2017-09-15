@@ -78,7 +78,7 @@ An image library using signatures allows to custom many different attributes. In
 
 __Definitions of what an image is:__
 
-There are four signatures defined in the following code. The first is ``ImageBase`` which defines the color, index type, width and height that an image implementation must posses. The next two signatures ``UniformImage`` and ``IndexedImage`` provide variants of what constitutes an image, specifically about how it is indexed. The last signature ``Image`` has no additional members, but defines an image to include both ``UnifromImage`` and ``IndexedImage`` indexing. Since both inherit from ``ImageBase`` so does ``Image``.
+There are four signatures defined in the following code. The first is ``ImageBase`` which defines the color, index type, width and height that an image implementation must posses. The next two signatures ``UniformImage`` and ``IndexedImage`` provide variants of what constitutes an image, specifically about how it is indexed. The last signature ``Image`` has no additional members, but defines an image to include both ``UniformImage`` and ``IndexedImage`` indexing. Since both inherit from ``ImageBase`` so does ``Image``.
 
 ```D
 signature ImageBase() {
