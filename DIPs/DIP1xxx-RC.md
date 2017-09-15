@@ -52,9 +52,13 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
        - If documented with a body this should be treated as documentation for what it should do.
    
 2. Extension to ``typeof(Signature, Identifier=Value, ...)``. Where Value can be a type or expression. Evaluates out the hidden arguments to a signature.
-3. Is expression is extended to support checking if a given type is a signature. Unresolved (the hidden arguments) will match ``is(T==signature)``. Resolved signatures will match ``is(T:signature)``. It is unexpected that a library/framework can do much with the prior.
+3. Is expression is extended to support checking if a given type is a signature. Unresolved (the hidden arguments) will match ``is(T==signature)``. Resolved signatures will match ``is(T:signature)``. It is unexpected that a library/framework can do much with the prior. For checking if a type is a signature ``is(T:Signature)`` is to be used e.g. ``is(T:Image)``.
     - Evaluated signatures via ``typeof(Signature, Identifier=Value, ...)`` must be compared using ``is(T==U)``, where U is the evaluated type.
-    - If the parent is a version statement inside a signature and the signature is initiated by a signature of the castable type, then it will return false.
+    - If ``is(T:Signature)`` is used inside a static if, it will always return false if the initialization of the given signature is occuring from within another ``is(T:Signature)``. This prevents a triangle dependency problem.
+    
+                 implementation
+                /              \
+            signature ----- signature
 
 4. Template Argument is extended to support checking if is signature e.g. ``void foo(IImage:Image)(IImage theImage) {``.
   See ``is(T:Signature)`` for more information.
