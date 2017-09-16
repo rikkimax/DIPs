@@ -198,7 +198,7 @@ Where a method has a type of function, not a delegate. You will need ``extern(C)
 A word of caution for you is that unless a struct instance is already allocated on the heap and it isn't going into a scope variable then it will error out. Since no GC is available to handle allocation + cleanup.
 
 ### But what about...?
-There are definately other ways that this could have been done. The problem is, it needs to be first class citizen along side classes, structs and unions. And not elongated to library like vector types are.
+There are definitely other ways that this could have been done. The problem is, it needs to be first class citizen along side classes, structs and unions. And not elongated to library like vector types are.
 
 It has to work well with other language features. If you can do it better, show us!
 
