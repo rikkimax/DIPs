@@ -41,7 +41,7 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
         4. Should a struct instance not be going into a scope'd variable (or being returned without scope) it will be allocated into GC owned memory where it will be moved into, should it be copyable. If it cannot be copied, it is an error.<br/>
 
     2. There may be fields, methods and static functions. Operator overloads are also valid. A signature copies what structs supports here.
-    3. There are hidden arguments to a signature, these are aliases and enums. Provided by the syntax ``alias Type;`` and ``enum Value;`` or ``enum Type Value;``. Where it is inferred during implicit construction to come from the source type, in the form of ``Source.Type`` or ``Source.Value``.
+    3. There are hidden arguments to a signature, these are aliases and enums. Provided by the syntax ``alias Type;`` and ``enum Value;`` or ``enum Type Value;``. Where it is inferred during implicit construction to come from the source type, in the form of ``Source.Type`` or ``Source.Value``. Anonymous enum members, may also be used as an alternative to ``enum Value;`` syntax.
     4. Use ``this T`` template argument to provide the implementation instance. Must be last. Can be used after ``T...`` argument.
         Can only be assigned by the compiler. Will be ignored by template initialization syntax. Most signatures would not have any template arguments other than ``this T``.
     5. A signature may inherit from others, similar in syntax to interfaces in this manner. However the diamond problem is not valid with signatures. If a field/method/enum/alias is duplicated and is similar, it can be ignored. If it is different (e.g. different types or different attributes) then it is an error at the child signature.
@@ -70,6 +70,55 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
 
 The primary breaking change is the token ``signature`` is becoming a keyword.
 Existing code that uses it would need to rename existing symbols and variables but nothing requiring major changes.
+
+### BNF changes
+
+```BNF
+Keyword:
+    ...
+    signature
+
+Typeof:
+    ...
+    typeof ( Identifier )
+    typeof ( Identifier Typeof_Signature_Args)
+
+Typeof_Signature_Args:
+    Typeof_Signature_Arg
+    Typeof_Signature_Arg , Typeof_Signature_Arg
+
+Typeof_Signature_Arg:
+    Identifier = Expression
+    
+TypeSpecialization:
+    ...
+    signature
+    
+AggregateDeclaration:
+    ...
+    SignatureDeclaration
+    
+SignatureDeclaration:
+    signature Identifier AggregateBody
+    signature Identifier : IdentifierList AggregateBody
+    SignatureTemplateDeclaration
+
+SignatureTemplateDeclaration:
+    signature Identifier TemplateParameters Constraint|opt : IdentifierList AggregateBody
+    signature Identifier TemplateParameters : IdentifierList Constraint|opt AggregateBody
+
+EnumDeclaration:
+    ...
+    enum Identifier ;
+    
+AliasDeclarationY:
+    ...
+    Identifier
+```
+
+Where:
+- identifier in ``typeof`` refers to an unresolved signature.
+- Identifier in ``Typoef_Signature_Arg`` refers to either an ``alias`` or ``enum`` inside the signature.
 
 ### Examples
 
