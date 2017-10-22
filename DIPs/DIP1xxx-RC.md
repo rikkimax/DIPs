@@ -272,20 +272,20 @@ It has to work well with other language features. If you can do it better, show 
 
 ## Appendix
 
-### scope ref return idea
+### scope [ref] return idea
 This is an idea of how to support the below code, but may not be required if an alternative is available:
 
 ```D
-scope ref Signature foo(scope ref Signature input) {
-    return Wrapper(&input);
+scope Signature foo(scope Signature input) {
+    return Wrapper(input);
 }
 ```
 
 It can be rewritten as:
 
 ```D
-void foo(scope ref Signature input, scope ref Wrapper output) {
-    output = Wrapper(&input);
+void foo(scope Signature input, scope ref Wrapper output) {
+    output = Wrapper(input);
 }
 ```
 
