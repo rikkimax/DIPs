@@ -128,6 +128,49 @@ Where:
 
 ### Examples
 
+#### Factory method pattern without classes
+
+The [factory method pattern](https://en.wikipedia.org/wiki/Factory_method_pattern) is a very popular OOP design pattern.
+But why does it have to class-only? Here is a small example of how it can be done with signatures instead.
+
+```D
+signature Factory {
+	alias Type;
+	Type create();
+}
+
+signature RoomFactory : Factory {
+	void setSize(vec2 size);
+}
+
+struct Room {
+	vec2 size;
+}
+
+struct MyRoomFactory {
+	alias Type=Room*;
+
+	vec2 size_;
+	void setSize(vec2 size) { size_ = size; }
+	Room* create() { return new Room(size_); }
+}
+
+void main() {
+	MyRoomFactory factory = ...;
+	setSize(factory);
+    myFunc(factory);
+}
+
+void setSize(IFactory : MyRoomFactory)(scope ref IFactory factory) {
+	factory.setSize(...);
+}
+
+void myFunc(IFactory : Factory)(scope ref IFactory factory) {
+	IFactory.Type myRoom = factory.create();
+	...
+}
+```
+
 #### Image library
 The challenge for performance in image libraries, is two-fold. First you either use classes and impose strong costs associated with lookups or use a templated approach which loses the ability to move any implementation around.
 
