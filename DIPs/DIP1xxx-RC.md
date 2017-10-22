@@ -123,7 +123,7 @@ AliasDeclarationY:
 
 Where:
 - identifier in ``typeof`` refers to an unresolved signature.
-- Identifier in ``Typoef_Signature_Arg`` refers to either an ``alias`` or ``enum`` inside the signature.
+- Identifier in ``Typeof_Signature_Arg`` refers to either an ``alias`` or ``enum`` inside the signature.
 
 ### Examples
 
