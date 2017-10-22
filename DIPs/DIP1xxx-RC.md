@@ -134,19 +134,47 @@ The [factory method pattern](https://en.wikipedia.org/wiki/Factory_method_patter
 But why does it have to class-only? Here is a small example of how it can be done with signatures instead.
 
 ```D
+/**
+ * The base definition of what a factory has.
+ *
+ * It is unknown what Type you are creating,
+ *  so it uses inference via a hidden argument
+ *  called Type which is an alias to a type/alias
+ *  in the implementation.
+ * 
+ * It has a method called create, as described by the pattern
+ *  and uses the Type specified earlier as the return type.
+ * Allowing the implementation define what it is creating and returning.
+ * For example it could return a pointer to a struct instead of a class instance.
+ */
 signature Factory {
     alias Type;
     Type create();
 }
 
+/**
+ * Creates a new type of factory, which constructs some sort of "room".
+ * A room requires a size to be created, but we don't know much more than that.
+ */
 signature RoomFactory : Factory {
     void setSize(vec2 size);
 }
 
+/**
+ * A very simple test struct.
+ *
+ * It contains a size (width and height) and not much else.
+ */
 struct Room {
     vec2 size;
 }
 
+/**
+ * The RoomFactory implementation.
+ *
+ * We don't set that we are a RoomFactory here though.
+ * After all, we may not even know that we are a Factory!
+ */
 struct MyRoomFactory {
     alias Type=Room*;
 
@@ -155,16 +183,34 @@ struct MyRoomFactory {
     Room* create() { return new Room(size_); }
 }
 
+/**
+ * A sample main function.
+ * 
+ * Constructs a MyRoomFactory, sets the size of a room and then constructs a room.
+ * Not terribly useful by itself.
+ *
+ * It does however show how to resolve the hidden arguments to a signature.
+ */
 void main() {
     MyRoomFactory factory = ...;
     setSize(factory);
-    myFunc(factory);
+    myFunc!(typeof(Factory, Type=Room*))(factory);
 }
 
-void setSize(IFactory : MyRoomFactory)(scope ref IFactory factory) {
+/**
+ * Sets the size of a room in a RoomFactory.
+ * 
+ * Uses the template argument implicit construction syntax.
+ */
+void setSize(IFactory : RoomFactory)(scope ref IFactory factory) {
     factory.setSize(...);
 }
 
+/**
+ * Does something with a room tha it creates.
+ *
+ * Doesn't know the implementation at all.
+ */
 void myFunc(IFactory : Factory)(scope ref IFactory factory) {
     IFactory.Type myRoom = factory.create();
     ...
