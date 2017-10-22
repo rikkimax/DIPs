@@ -65,7 +65,7 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
             Signature       Signature
 
 4. Template Argument is extended to support checking if is signature e.g. ``void foo(IImage:Image)(IImage theImage) {``.
-  See ``is(T:Signature)`` for more information.
+  This will automatically evaluate the argument passed as ``theImage`` into a unresolved ``Image`` who is resolved as an ``IImage``. See ``is(T:Signature)`` for more information.
 5. A signature may be used as the return type without resolving the hidden arguments. However it will act like auto does, only with a requirement of it matching ``is(T:Signature)``.
 
 ### Breaking changes / deprecation process
@@ -207,7 +207,7 @@ void setSize(IFactory : RoomFactory)(scope ref IFactory factory) {
 }
 
 /**
- * Does something with a room tha it creates.
+ * Does something with a room that it creates.
  *
  * Doesn't know the implementation at all.
  */
