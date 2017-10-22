@@ -49,6 +49,8 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
     8. Method bodies if provided give a "default" implementation should it not be available. Removes conditionally defining them.
        - If the given method is on the source type, then the body is ignored as normal.
        - If documented with a body this should be treated as documentation for what it should do.
+
+    9. Signatures may not have constructors. But they all have destructors + postblit and will automatically forward to the implementation if it exists. Otherwise they have empty function bodies.
    
 2. Extension to ``typeof(Signature, Identifier=Value, ...)``. Where Value can be a type or expression. Evaluates out the hidden arguments to a signature.
 3. Is expression is extended to support checking if a given type is a signature. Unresolved (the hidden arguments) will match ``is(T==signature)``. Resolved signatures will match ``is(T:signature)``. It is unexpected that a library/framework can do much with the prior. For checking if a type is a signature ``is(T:Signature)`` is to be used e.g. ``is(T:Image)``.
