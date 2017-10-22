@@ -135,39 +135,39 @@ But why does it have to class-only? Here is a small example of how it can be don
 
 ```D
 signature Factory {
-	alias Type;
-	Type create();
+    alias Type;
+    Type create();
 }
 
 signature RoomFactory : Factory {
-	void setSize(vec2 size);
+    void setSize(vec2 size);
 }
 
 struct Room {
-	vec2 size;
+    vec2 size;
 }
 
 struct MyRoomFactory {
-	alias Type=Room*;
+    alias Type=Room*;
 
-	vec2 size_;
-	void setSize(vec2 size) { size_ = size; }
-	Room* create() { return new Room(size_); }
+    vec2 size_;
+    void setSize(vec2 size) { size_ = size; }
+    Room* create() { return new Room(size_); }
 }
 
 void main() {
-	MyRoomFactory factory = ...;
-	setSize(factory);
+    MyRoomFactory factory = ...;
+    setSize(factory);
     myFunc(factory);
 }
 
 void setSize(IFactory : MyRoomFactory)(scope ref IFactory factory) {
-	factory.setSize(...);
+    factory.setSize(...);
 }
 
 void myFunc(IFactory : Factory)(scope ref IFactory factory) {
-	IFactory.Type myRoom = factory.create();
-	...
+    IFactory.Type myRoom = factory.create();
+    ...
 }
 ```
 
