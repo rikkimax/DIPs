@@ -86,7 +86,7 @@ Typeof:
 
 Typeof_Signature_Args:
     Typeof_Signature_Arg
-    Typeof_Signature_Arg , Typeof_Signature_Arg
+    Typeof_Signature_Arg , Typeof_Signature_Args
 
 Typeof_Signature_Arg:
     Identifier = Expression
