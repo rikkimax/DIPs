@@ -101,8 +101,12 @@ AggregateDeclaration:
     
 SignatureDeclaration:
     signature Identifier AggregateBody
-    signature Identifier : IdentifierList AggregateBody
+    signature Identifier : SignatureInheritance AggregateBody
     SignatureTemplateDeclaration
+    
+SignatureInheritance:
+    Identifier
+    Identifier , SignatureInheritance
 
 SignatureTemplateDeclaration:
     signature Identifier TemplateParameters Constraint|opt : IdentifierList AggregateBody
