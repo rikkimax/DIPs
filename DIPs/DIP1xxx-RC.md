@@ -42,8 +42,7 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
 
     2. There may be fields, methods and static functions. Operator overloads are also valid. A signature copies what structs supports here.
     3. There are hidden arguments to a signature, these are aliases and enums. Provided by the syntax ``alias Type;`` and ``enum Value;`` or ``enum Type Value;``. Where it is inferred during implicit construction to come from the source type, in the form of ``Source.Type`` or ``Source.Value``. Anonymous enum members, may also be used as an alternative to ``enum Value;`` syntax.
-    4. Use ``this T`` template argument to provide the implementation instance. Must be last. Can be used after ``T...`` argument.
-        Can only be assigned by the compiler. Will be ignored by template initialization syntax. Most signatures would not have any template arguments other than ``this T``.
+    4. ``this`` will always refer to the implementation and never the resolved signature instance itself.
     5. A signature may inherit from others, similar in syntax to interfaces in this manner. However the diamond problem is not valid with signatures. If a field/method/enum/alias is duplicated and is similar, it can be ignored. If it is different (e.g. different types or different attributes) then it is an error at the child signature.
     6. A signature may be null. Because of this ``v is null`` works also for signatures instances.
     7. Signatures may be cast down for their inheritence. This can be computed statically and does not require any runtime knowledge. However they may not be cast up again. Rules regarding const, immutabe, shared ext. still apply like any other type.
@@ -145,15 +144,15 @@ signature ImageBase() {
     }
 }
 
-signature UniformImage(this T) : ImageBase {
-    static if (is(T:IndexedImage)) {
+signature UniformImage : ImageBase {
+    static if (is(typeof(this):IndexedImage)) {
         Color opIndex(IndexType i) {
-            // !__traits(compiles, {T t; Color c = t.opIndex(IndexType.init);})
+            // !__traits(compiles, {typeof(this) t; Color c = t.opIndex(IndexType.init);})
             return IndexedImage(this)[cast(IndexType)(i % width), cast(IndexType)floor(i / width)];
         }
         
         void opIndexAssign(Color v, IndexType i) {
-            // !__traits(compiles, {T t; t.opIndexAssign(Color.init, IndexType.init);})
+            // !__traits(compiles, {typeof(this) t; t.opIndexAssign(Color.init, IndexType.init);})
             IndexedImage(this)[cast(IndexType)(i % width), cast(IndexType)floor(i / width)] = v;
         }
     } else {
@@ -162,15 +161,15 @@ signature UniformImage(this T) : ImageBase {
     }
 }
 
-signature IndexedImage(this T) : ImageBase {
-    static if (is(T:UniformImage)) {
+signature IndexedImage : ImageBase {
+    static if (is(typeof(this):UniformImage)) {
         Color opIndex(IndexType x, IndexType y) {
-            // !__traits(compiles, {T t; Color c = t.opIndex(IndexType.init, IndexType.init);})
+            // !__traits(compiles, {typeof(this) t; Color c = t.opIndex(IndexType.init, IndexType.init);})
             return UniformImage(this)[y*width+x];
         }
 
         void opIndexAssign(Color v, IndexType x, IndexType y) {
-            // !__traits(compiles, {T t; t.opIndexAssign(Color.init, IndexType.init, IndexType.init);})
+            // !__traits(compiles, {typeof(this) t; t.opIndexAssign(Color.init, IndexType.init, IndexType.init);})
             UniformImage(this)[y*width+x] = v;
         }
     } else {
@@ -179,10 +178,8 @@ signature IndexedImage(this T) : ImageBase {
     }
 }
 
-signature Image(this T) : UniformImage, IndexedImage {}
+signature Image : UniformImage, IndexedImage {}
 ```
-
-Of importance is to note how ``this T`` is used inside the template argument of the signature in both ``UniformImage`` and ``IndexedImage``. This provides the implementation type, it is optional but when it is used in these signatures it allows you to have a conditional method body. This is done by the extension to the version statement and having the method body being the default should the implementation not have said method prototype.
 
 __Example usage:__
 
