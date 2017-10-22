@@ -293,8 +293,13 @@ To determine if a type is an ``Image``, you need to determine three things.
    Is the type a ``UniformImage``? Ignoring the first static if branch.
     - If yes, is a ``IndexedImage``.
     - If no, try the method prototypes, do they match?
+4. If it is not a ``UniformImage``<br/>
+    If ``IndexedImage`` has been resolved (from first static if branch), it is a ``UniformImage``. Otherwise it isn't.
+5. If it is not a ``IndexedImage``<br/>
+    If ``UniformImage`` has been resolved (from first static if branch), it is a ``IndexedImage``. Otherwise it isn't.
 
-If all three are yes's, then the type is a ``Image``.
+If the type has been discovered to be``ImageBase``, ``UniformImage`` and ``IndexedImage``, then the type is a ``Image``.
+Steps 4 and 5 exist because of the static if branching. In essence while signatures are being resolved and not complete, keep attempting to resolving (without is returning false).
 
 Next take all known hidden arguments and construct a ``typeof`` as ``typeof(Image, Color=Impl.Color, IndexType=Impl.IndexType)``.
 This becomes your resolved instance of ``Image``. Where ``Impl`` is your implementation type.
