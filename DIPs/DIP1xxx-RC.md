@@ -221,6 +221,26 @@ Interfaces are designed to list methods that must be implemented. In some langua
 ### Shouldn't this work for arrays and unions?
 Sure they could. Unions by themselves are mostly useless and unsafe. Arrays can't have methods. They can be emulated via free-functions with UFCS. But over all it just complicates things for this DIP. It can be added later on should it be desired. In the mean time, structs make excellant wrappers.
 
+### Library solution or language?
+Library solutions cannot change the language semantics and provide implicit construction against implementations.
+The ability to "hide" that a signature is always templated, is a killer feature i.e.
+
+```D
+auto myFunction(IR:InputRange)(IR from) if (is(IR.Type == int)) {
+    ...
+}
+```
+
+Instead of:
+
+```D
+auto myFunction(IR)(IR from) if (is(IR.Type == int) && isInputRange!IR) {
+    ...
+}
+```
+
+Less code, clearer purpose and less template initializations over all.
+
 ### Isn't this costly?
 No! If the implementation type is a struct and passed to a scope variable, it is nearly free. The most expensive thing is copying some pointers over into a region of the stack.
 
