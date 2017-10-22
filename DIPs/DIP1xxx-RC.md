@@ -270,6 +270,53 @@ There are definitely other ways that this could have been done. The problem is, 
 
 It has to work well with other language features. If you can do it better, show us!
 
+## Appendix
+
+### scope ref return idea
+This is an idea of how to support the below code, but may not be required if an alternative is available:
+
+```D
+scope ref Signature foo(scope ref Signature input) {
+    return Wrapper(&input);
+}
+```
+
+It can be rewritten as:
+
+```D
+void foo(scope ref Signature input, scope ref Wrapper output) {
+    output = Wrapper(&input);
+}
+```
+
+This forces the return value to be pushed into the callers scope on to the stack. Allowing it to be chained.
+Because a Signature as a return type acts as ``auto`` with extra validation, you cannot return multiple different types as the return value. So only one hidden rewritten argument is required.
+
+In full it would end in having code similar to:
+
+```D
+void caller(int[] input) {
+    Foo_Wrapper __fooWrapper;
+    foo(input, __fooWrapper);
+    Bar_Wrapper __barWrapper;
+    bar(__fooWrapper, __barWrapper);
+    
+    foreach(v; __barWrapper) {
+        ...
+    }
+}
+```
+
+Instead of:
+
+```D
+void caller(int[] input) {
+    foreach(v; foo(input).bar) {
+        ///
+    }
+}
+```
+
 ## Copyright & License
 
 Copyright (c) 2017 by the D Language Foundation
