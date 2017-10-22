@@ -279,6 +279,26 @@ signature IndexedImage : ImageBase {
 signature Image : UniformImage, IndexedImage {}
 ```
 
+Resolution for an ``Image`` takes two phases. First is given type even an ``Image``, and then resolving ``Image`` out.
+To determine if a type is an ``Image``, you need to determine three things.
+
+1. Is the type a ``ImageBase``?<br/>
+   This should be rather simple and quick to do.
+2. Is the type a ``UniformImage``?<br/>
+   Is the type a ``IndexedImage``? Ignoring the first static if branch.
+    - If yes, is a ``UniformImage``.
+    - If no, try the method prototypes, do they match?
+
+3. Is the type a ``IndexedImage``?<br/>
+   Is the type a ``UniformImage``? Ignoring the first static if branch.
+    - If yes, is a ``IndexedImage``.
+    - If no, try the method prototypes, do they match?
+
+If all three are yes's, then the type is a ``Image``.
+
+Next take all known hidden arguments and construct a ``typeof`` as ``typeof(Image, Color=Impl.Color, IndexType=Impl.IndexType)``.
+This becomes your resolved instance of ``Image``. Where ``Impl`` is your implementation type.
+
 __Example usage:__
 
 In the example usage code, two functions are defined (without the bodies since that is a complex operation). These functions are used to manipulate an image in some form. Of note is that the signature used as an argument is specified as part of the template argument and not implicit. But the creation as it is passed is.
