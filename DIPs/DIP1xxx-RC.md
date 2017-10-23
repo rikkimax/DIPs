@@ -84,7 +84,7 @@ Keyword:
 Typeof:
     ...
     typeof ( Identifier )
-    typeof ( Identifier Typeof_Signature_Args)
+    typeof ( Identifier , Typeof_Signature_Args )
 
 Typeof_Signature_Args:
     Typeof_Signature_Arg
