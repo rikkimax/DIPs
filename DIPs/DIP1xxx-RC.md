@@ -383,7 +383,7 @@ struct Signature {
 }
 ```
 
-Where a method has a type of function, not a delegate. You will need ``extern(C)`` them in the signature to make it work however if it is comming from C.
+Where a method has a type of function, not a delegate. You will need ``extern(C)`` them in the signature to make it work, if it is comming from C.
 
 A word of caution for you is that unless a struct instance is already allocated on the heap and it isn't going into a scope variable then it will error out. Since no GC is available to handle allocation + cleanup.
 
