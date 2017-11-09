@@ -17,7 +17,7 @@ It provides dynamic templating of types while appearing as one to the end progra
 
 Signatures are a very uncommon language feature originating in the ML family, examples of this are [Ocaml](https://caml.inria.fr/pub/docs/manual-ocaml/moduleexamples.html) and [SML](http://www.smlnj.org/doc/Conversion/modules.html).
 
-A more recent example of signatues is [Rust's](https://doc.rust-lang.org/1.8.0/book/traits.html) traits.
+A more recent example of signatures is [Rust's](https://doc.rust-lang.org/1.8.0/book/traits.html) traits.
 
 ## Rationale
 
