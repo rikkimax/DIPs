@@ -338,7 +338,9 @@ In the example above with HorizontalStorage with ``RGBA`` as the color and as de
 ## FAQ
 
 ### Why not extend interfaces?
-Interfaces are designed to list methods that must be implemented. In some languages they may even list fields. However they are extended and manipulated. Signatures are on the other hand, extend and manipulate a given type into a new form. They are not only fully aware of the implementation, but instead are free to manipulate it into a very nice and usable form by the user.
+There are three main differences between an interface and a signature, making for a rather non-direct comparison. First and foremost, interfaces are designed around the fact that they get inherited by other interfaces and classes. This produces a very rigid hierachy with minimal ability to change parts without breaking quite a bit of code. Second, interfaces are fully unaware of their implementations and who inherits from them. This makes them very undesirable if you want an interface to modify how an implementation does something. Lastly, interfaces are very strict in how they work with regards to memory, specifically heap allocated and only via a class.
+
+A signature on the other hand desires to be more of a temporary description of another type instance. It does not describe how it must be in a perfact way, only what it must be able to conform to. While signatures do use inheritance, this is only to build up a description of what an implementation instance must have. It is not building up to something that must be inherited at the implementation side. Fundamentally it allows you to adapt an implementation type to an abstraction of unknown origin.
 
 ### Shouldn't this work for arrays and unions?
 Sure they could. Unions by themselves are mostly useless and unsafe. Arrays can't have methods. They can be emulated via free-functions with UFCS. But over all it just complicates things for this DIP. It can be added later on should it be desired. In the mean time, structs make excellant wrappers.
