@@ -369,19 +369,19 @@ signature InputAssignable : InputRange {
 
 signature ForwardRange : InputRange {
     @property {
-        typeof(ForwardRange, Type=Type) save();
+        ForwardRange save();
     }
 }
 
 signature ForwardAssignable : InputAssignable, ForwardRange {
     @property {
-        typeof(ForwardAssignable, Type=Type) save();
+        ForwardAssignable save();
     }
 }
 
 signature BidirectionalRange : ForwardRange {
     @property {
-        typeof(BidirectionalRange, Type=Type) save();
+        BidirectionalRange save();
         Type back();
     }
     
@@ -391,7 +391,7 @@ signature BidirectionalRange : ForwardRange {
 
 signature BidirectionalAssignable : ForwardAssignable, BidirectionalRange {
     @property {
-        typeof(BidirectionalAssignable, Type=Type) save();
+        BidirectionalAssignable save();
         void back(Type newVal);
     }
 }
@@ -406,13 +406,30 @@ siganture RandomAccessFinite : BidirectionalRange {
     
     Type opIndex(size_t);
     Type moveAt(size_t);
-    typeof(RandomAccessFinite, Type=Type) opSlice(size_t, size_t);
+    RandomAccessFinite opSlice(size_t, size_t);
 }
 
-signature RandomAccessAssignable {}
-signature RandomAccessInfinite {}
+signature RandomAccessAssignable : ForwardAssignable, BidirectionalRange {
+    @property {
+        RandomAccessAssignable save();
+        void back(Type newVal);
+    }
+}
 
-signature OutputRange {}
+signature RandomAccessInfinite : ForwardRange {
+    @property {    
+        RandomAccessInfinite save();
+    }
+    
+    Type moveAt(size_t);
+    Type opIndex(size_t);
+}
+
+signature OutputRange {
+    alias Type;
+    
+    void put(Type);
+}
 ```
 
 
