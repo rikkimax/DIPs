@@ -60,6 +60,7 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
 
     - Evaluated signatures via ``typeof(Signature, Identifier=Value, ...)`` must be compared using ``is(T==U)``, where U is the evaluated type.
     - The form ``is(Signature2:Signature1)`` will evaluate if Signature2 inherits from Signature1.
+    
     - If ``is(T:Signature)`` is used inside a static if, it will always return false if the initialization of the given signature is occuring from within another ``is(T:Signature)``. This prevents a diamond dependency problem.
     
                  implementation
