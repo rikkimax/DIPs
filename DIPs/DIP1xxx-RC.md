@@ -66,6 +66,8 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
                 |               |
             Signature       Signature
 
+    - The form ``is(Signature2:Signature1)`` will evaluate if Signature2 inherits from Signature1.
+
 4. Template Argument is extended to support checking if is signature e.g. ``void foo(IImage:Image)(IImage theImage) {``.
   This will automatically evaluate the argument passed as ``theImage`` into a unresolved ``Image`` who is resolved as an ``IImage``. See ``is(T:Signature)`` for more information.
 5. A signature may be used as the return type without resolving the hidden arguments. However it will act like auto does, only with a requirement of it matching ``is(T:Signature)``.
