@@ -335,6 +335,86 @@ void main() {
 
 In the example above with HorizontalStorage with ``RGBA`` as the color and as defined by it using the ``IndexType`` as size_t.
 
+### Ranges
+
+Ranges are a key idiom in the D community. They are composed of two different kinds, input and output based. These are currently described by using interfaces and templates. This unfortunately has the side effect of severe bloat in the number of template initaitions that occur to accommodate voldermort types and the symbols themselves.
+
+An optimization that can be implemented is for any voldermort type going into a signature to not generate ``TypeInfo`` if it does not reference it. This potentially will cut down of the number of template initaitions down the road in other symbols.
+
+```D
+
+signature InputRange {
+    alias Type;
+    
+    Type moveFront();
+    
+    @property {
+        Type front();
+        bool empty();
+    }
+    
+    void popFront();
+    
+    int opApply(scope int delegate(Type));
+    int opApply(scope int delegate(size_t, Type));
+
+}
+
+signature InputAssignable : InputRange {
+    @property {
+        void front(Type newVal);
+    }
+}
+
+signature ForwardRange : InputRange {
+    @property {
+        typeof(ForwardRange, Type=Type) save();
+    }
+}
+
+signature ForwardAssignable : InputAssignable, ForwardRange {
+    @property {
+        typeof(ForwardAssignable, Type=Type) save();
+    }
+}
+
+signature BidirectionalRange : ForwardRange {
+    @property {
+        typeof(BidirectionalRange, Type=Type) save();
+        Type back();
+    }
+    
+    Type moveBack();
+    void popBack();
+}
+
+signature BidirectionalAssignable : ForwardAssignable, BidirectionalRange {
+    @property {
+        typeof(BidirectionalAssignable, Type=Type) save();
+        void back(Type newVal);
+    }
+}
+
+siganture RandomAccessFinite : BidirectionalRange {
+    @property {
+        RandomAccessFinite save();
+        size_t length();
+    }
+    
+    alias opDollar = length;
+    
+    Type opIndex(size_t);
+    Type moveAt(size_t);
+    typeof(RandomAccessFinite, Type=Type) opSlice(size_t, size_t);
+}
+
+signature RandomAccessAssignable {}
+signature RandomAccessInfinite {}
+
+signature OutputRange {}
+```
+
+
 ## FAQ
 
 ### Why not extend interfaces?
