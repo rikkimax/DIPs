@@ -56,7 +56,7 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
     11. Signatures must be specialized when used inside of a signature (e.g. method return/method arg/field). Reference to ones self does not require specialization unless wanting to initiate another hidden parameters. For example the signature ``signature Foo { alias T; Foo func(); }`` is equivalent to ``signature Foo { alias T; typeof(Foo, T=T) func(); }``.
    
 2. Extension to ``typeof(Signature, Identifier=Value, ...)``. Where Value can be a type or expression. Evaluates out the hidden arguments to a signature.
-3. Is expression is extended to support checking if a given type is a signature. Unresolved (the hidden arguments) will match ``is(T==signature)``. Resolved signatures will match ``is(T:signature)``. It is unexpected that a library/framework can do much with the prior. For checking if a type is a signature ``is(T:Signature)`` is to be used e.g. ``is(T:Image)``.
+3. Is expression is extended to support checking if a given type is a signature. Unresolved (the hidden arguments) will match ``is(T==signature)``. Resolved signatures will match ``is(T:signature)`` e.g. ``is(T:typeof(Signature, Type=MyType))``. It is unexpected that a library/framework can do much with the prior. For checking if a type is a specific unresolved signature ``is(T:Signature)`` is to be used e.g. ``is(T:Image)``.
 
     - Evaluated signatures via ``typeof(Signature, Identifier=Value, ...)`` must be compared using ``is(T==U)``, where U is the evaluated type.
     - The form ``is(Signature2:Signature1)`` will evaluate if Signature2 inherits from Signature1.
