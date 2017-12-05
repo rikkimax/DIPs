@@ -346,7 +346,6 @@ Ranges are a key idiom in the D community. They are composed of two different ki
 The complixity of ranges as signatures comes from the need to modify inherited methods return type and arguments. This is supported already in class/interface hierachies. The general concept comes from [covariance and invariance](https://en.wikipedia.org/wiki/Covariance_and_contravariance_(computer_science)) and can be used inside of signatures as well.
 
 ```D
-
 signature InputRange {
     alias Type;
     
@@ -427,9 +426,26 @@ signature RandomAccessInfinite : ForwardRange {
     Type moveAt(size_t);
     Type opIndex(size_t);
 }
+```
 
+Finally output ranges are special compared to input ranges. They don't really have any form of inheritance.
+But they do tend to have one special method, the ability to add multiple values ``~=``.
+The problem with operator overloads like ``opOpAssign`` is the operation itself is a template argument.
+Because of this they cannot be done automatically like other methods. So we patch it manually and provide a fallback into using put.
+
+```D
 signature OutputRange {
     alias Type;
+    
+    void opOpAssign(string op)(Type[] values...) if (op == "~=") {
+        static if (__traits(compiles, { this ~= values; })) {
+            this ~= values;
+        } else {
+            foreach(v; values) {
+                put(v);
+            }
+        }
+    }
     
     void put(Type);
 }
