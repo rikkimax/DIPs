@@ -451,7 +451,32 @@ signature OutputRange {
 }
 ```
 
-An optimization that can be implemented is for any voldermort type going into a signature to not generate ``TypeInfo``, if it has not been referenced. This potentially will cut down the number of template initaitions down the road in other symbols and prevent the need (potentially) for vtables for classes.
+An optimization that can be implemented is for any voldermort type going into a signature is to not generate ``TypeInfo``, if it has not been referenced. This potentially will cut down the number of template initaitions down the road in other symbols and prevent the need (potentially) for vtables for classes. An example of this is as follows:
+
+```D
+scope InputRange multiplier(IInputRange:InputRange)(scope IInputRange input) {
+    struct Voldermort {
+        alias Type = IInputRange.Type;
+        IInputRange input;
+    
+        Type moveFront() { assert(0); }
+
+        @property {
+            Type front() { return input.front * 2; }
+            bool empty() { return input.empty; }
+        }
+
+        void popFront() { input.popFront; }
+
+        int opApply(scope int delegate(Type)) { assert(0); }
+        int opApply(scope int delegate(size_t, Type)) { assert(0); }
+    }
+    
+    return Voldermort(input);
+}
+```
+
+In the above example no ``TypeInfo`` will be generated. If ``scope`` is not provided, the above code will still work however because input ranges tend to be on the stack, it will be unsafe and the input could be deallocated at any time causing a segfault.
 
 ## FAQ
 
