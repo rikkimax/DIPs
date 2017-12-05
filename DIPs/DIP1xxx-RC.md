@@ -345,6 +345,8 @@ Ranges are a key idiom in the D community. They are composed of two different ki
 
 The complixity of ranges as signatures comes from the need to modify inherited methods return type and arguments. This is supported already in class/interface hierachies. The general concept comes from [covariance and invariance](https://en.wikipedia.org/wiki/Covariance_and_contravariance_(computer_science)) and can be used inside of signatures as well.
 
+The below code is a direct translation from the input range hierachy as provided in [``std.range.interface``](https://dlang.org/phobos/std_range_interfaces.html). A package of signature based representations would look vastly different with the goal of providing optional parts with fallbacks instead of being a translation.
+
 ```D
 signature InputRange {
     alias Type;
