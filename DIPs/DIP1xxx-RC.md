@@ -54,7 +54,7 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
     9. Signatures may not have constructors. But they all have destructors + postblit and will automatically forward to the implementation if it exists. Otherwise they have empty function bodies.
     10. Inside of a signature multiple ``alias this`` acts as additional inheritance to the ones defined at the signature name level. This adds no additional logic associated with ``alias this`` and calls into the existing inheritance support.
     11. Signatures must be specialized when used inside of a signature (e.g. method return/method arg/field). Reference to ones self does not require specialization unless wanting to initiate another hidden parameters. For example the signature ``signature Foo { alias T; Foo func(); }`` is equivalent to ``signature Foo { alias T; typeof(Foo, T=T) func(); }``.
-    12. Usage of signatures as return types and arguments obey the same rules associated with interfaces and classes inside said interfaces/classes hierachies. The specific rules if ambiguous should be left to a future DIP by the language creators to change the existing language semantics. Patch functions will be required to implement this however and have each version available for casting to parent signatures.
+    12. Usage of signatures as return types and arguments obey the same rules associated with interfaces and classes inside said interfaces/classes hierachies which is covariance and invariance. Patch functions will be required to implement this however and have each version available for casting to parent signatures.
    
 2. Extension to ``typeof(Signature, Identifier=Value, ...)``. Where Value can be a type or expression. Evaluates out the hidden arguments to a signature.
 3. Is expression is extended to support checking if a given type is a signature. Unresolved (the hidden arguments) will match ``is(T==signature)``. Resolved signatures will match ``is(T:signature)`` e.g. ``is(T:typeof(Signature, Type=MyType))``. It is unexpected that a library/framework can do much with the prior. For checking if a type is a specific unresolved signature ``is(T:Signature)`` is to be used e.g. ``is(T:Image)``.
@@ -343,7 +343,7 @@ In the example above with HorizontalStorage with ``RGBA`` as the color and as de
 
 Ranges are a key idiom in the D community. They are composed of two different kinds, input and output based. These are currently described by using interfaces and templates. This unfortunately has the side effect of severe bloat in the number of template initaitions that occur to accommodate voldermort types and the symbols themselves.
 
-An optimization that can be implemented is for any voldermort type going into a signature to not generate ``TypeInfo`` if it does not reference it. This potentially will cut down of the number of template initaitions down the road in other symbols.
+The complixity of ranges as signatures comes from the need to modify inherited methods return type and arguments. This is supported already in class/interface hierachies. The general concept comes from [covariance and invariance](https://en.wikipedia.org/wiki/Covariance_and_contravariance_(computer_science)) and can be used inside of signatures as well.
 
 ```D
 
@@ -435,6 +435,7 @@ signature OutputRange {
 }
 ```
 
+An optimization that can be implemented is for any voldermort type going into a signature to not generate ``TypeInfo``, if it has not been referenced. This potentially will cut down the number of template initaitions down the road in other symbols and prevent the need (potentially) for vtables for classes.
 
 ## FAQ
 
