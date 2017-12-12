@@ -19,7 +19,7 @@ Signatures are a very uncommon language feature originating in the ML family, ex
 
 A more recent example of signatures is [Rust's](https://doc.rust-lang.org/1.8.0/book/traits.html) traits.
 
-Supplemetary code is provided in the authors [repository](https://github.com/rikkimax/stdc-signatures).
+Supplementary code is provided by the author in the [repository](https://github.com/rikkimax/stdc-signatures).
 
 ## Rationale
 
