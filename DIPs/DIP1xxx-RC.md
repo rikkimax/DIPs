@@ -78,6 +78,8 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
   This will automatically evaluate the argument passed as ``theImage`` into a unresolved ``Image`` who is resolved as an ``IImage``. See ``is(T:Signature)`` for more information.
 5. A signature may be used as the return type without resolving the hidden arguments. However it will act like auto does, only with a requirement of it matching ``is(T:Signature)``.
 
+TODO: describe its vtable nature.
+
 ### Breaking changes / deprecation process
 
 The primary breaking change is the token ``signature`` is becoming a keyword.
