@@ -28,6 +28,7 @@ In (S)ML based languages signatures provides additional behavior, verification o
 Commonly this is used to seperate an implementation from the usage, without using classes with inheritence.
 
 TODO: error messages + past discussions
+TODO: enables design by introspection but nicerly
 
 ## Description
 
