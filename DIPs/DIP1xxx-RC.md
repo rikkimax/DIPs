@@ -27,6 +27,8 @@ Encapsulating behavior directly into an interface of a wrapped type provides ben
 In (S)ML based languages signatures provides additional behavior, verification of existing behavior and interfaces.
 Commonly this is used to seperate an implementation from the usage, without using classes with inheritence.
 
+TODO: error messages + past discussions
+
 ## Description
 
 This DIP is limited to Classes and structs.
