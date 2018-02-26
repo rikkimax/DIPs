@@ -53,9 +53,18 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
     5. A signature may inherit from others, similar in syntax to interfaces in this manner. However the diamond problem is not valid with signatures. If a field/method/enum/alias is duplicated and is similar, it can be ignored. If it is different (e.g. different types or different attributes) then it is an error at the child signature.
     6. A signature may be null. Because of this ``v is null`` works also for signatures instances.
     7. Signatures may be cast down for their inheritence. This can be computed statically and does not require any runtime knowledge. However they may not be cast up again. Rules regarding const, immutabe, shared ext. still apply like any other type.
-    8. Method bodies if provided give a "default" implementation should it not be available. Removes conditionally defining them.
+    8. Method bodies if provided give a "default" implementation should it not be provided by the child. Removes conditionally defining them.
        - If the given method is on the source type, then the body is ignored as normal.
        - If documented with a body this should be treated as documentation for what it should do.
+       - The body is initialized in the child type, not in the parent.
+         The below code will result in the output of ``Child``'s mangled name, not ``Parent``'s.
+
+         ```D
+         signature Parent {
+            void func() { __traits(parent, func).mangleof }
+         }
+         signature Child : Parent {}
+         ```
 
     9. Signatures may not have constructors. But they all have destructors + postblit and will automatically forward to the implementation if it exists. Otherwise they have empty function bodies.
     10. Inside of a signature multiple ``alias this`` acts as additional inheritance to the ones defined at the signature name level. This adds no additional logic associated with ``alias this`` and calls into the existing inheritance support.
