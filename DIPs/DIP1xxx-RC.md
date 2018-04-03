@@ -17,7 +17,9 @@ It provides dynamic templating of types while appearing as one to the end progra
 
 Signatures are a very uncommon language feature originating in the ML family, examples of this are [Ocaml](https://caml.inria.fr/pub/docs/manual-ocaml/moduleexamples.html) and [SML](http://www.smlnj.org/doc/Conversion/modules.html).
 
-A more recent example of signatures is [Rust's](https://doc.rust-lang.org/1.8.0/book/traits.html) traits.
+A more recent example of signatures is [Rust's](https://doc.rust-lang.org/1.8.0/book/traits.html) traits or [Swift's](https://developer.apple.com/library/content/documentation/Swift/Conceptual/Swift_Programming_Language/Protocols.html#//apple_ref/doc/uid/TP40014097-CH25-ID267) Protocols which both focus upon implementing a specification, not a specification matching an existing representation.
+
+Alternative designs to D's structs is C#, which can [inherit interfaces](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/structs) but not other structs or classes.
 
 Supplementary code is provided by the author in the [repository](https://github.com/rikkimax/stdc-signatures).
 
