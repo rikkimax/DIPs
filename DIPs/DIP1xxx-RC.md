@@ -10,8 +10,7 @@
 
 ## Abstract
 
-A combination of behavior and interface; enables passing of a set of behaviors and values from unknown sources using a encapsulation.
-It provides dynamic templating of types while appearing as one to the end programmer with a strong focus on heap allocation of memory.
+A signature is a static vtable representation of complex objects such as structs and classes. It includes a data pointer as well as pointers to functions and data members in them. They primarily represent heap allocated objects but can take advantage of the stack for scope items. They are very good at presenting behavior and description of objects in a way familiar to D programmers while limiting ugly template if constraints that is hard to read and understand.
 
 ### Links
 
@@ -89,8 +88,6 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
 4. Template Argument is extended to support checking if is signature e.g. ``void foo(IImage:Image)(IImage theImage) {``.
   This will automatically evaluate the argument passed as ``theImage`` into a unresolved ``Image`` who is resolved as an ``IImage``. See ``is(T:Signature)`` for more information.
 5. A signature may be used as the return type without resolving the hidden arguments. However it will act as auto with a requirement of it matching ``is(T:Signature)``.
-
-TODO: describe its vtable nature.
 
 ### Breaking changes / deprecation process
 
