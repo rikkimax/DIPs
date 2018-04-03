@@ -334,7 +334,7 @@ void rotate(IImage:Image)(scope IImage image, float rotation) if (!is(IImage.Ind
 void rotate(IImage:Image)(scope IImage image, float rotation) if (is(IImage.IndexType == size_t)) { /* ... */ }
 
 void main() {
-    HorizontalStorage!RGBA source = HorizontalStorage(/*width*/100, /*height*/100);
+    HorizontalStorage!RGBA source = HorizontalStorage!RGBA(/*width*/100, /*height*/100);
     // ... fill?
     source.rotate(80f);
 }
@@ -346,7 +346,7 @@ Alternatively to implementing rotate using template argument, if you only need o
 void rotate(scope typeof(Image, Color=RGBA, IndexType=size_t) image, float rotation) { /* ... */ }
 
 void main() {
-    HorizontalStorage!RGBA source = HorizontalStorage(/*width*/100, /*height*/100);
+    HorizontalStorage!RGBA source = HorizontalStorage!RGBA(/*width*/100, /*height*/100);
     // ... fill?
     source.rotate(80f);
 
