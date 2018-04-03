@@ -25,7 +25,7 @@ Supplementary code is provided by the author in the [repository](https://github.
 
 ## Rationale
 
-In the D community we utilize idioms and design patterns which emphasize template usage. Template usage enables high code reuse but it also causes code bloat with quite herrdenous error messages. These supplementary outcomes are not positive for both new and existing users in understanding why a template does not succeed.
+In the D community we utilize idioms and design patterns which emphasize template usage. Template usage enables high code reuse but it also causes code bloat with quite horrendous error messages. These supplementary outcomes are not positive for both new and existing users in understanding why a template does not succeed.
 
 At the core of the problem, we aim to pass around types based upon a statically known interface without knowledge of what the implementation is during compilation. It is quite common for when template conditions failure at a function level, to not know if it is because of a function specific specialization failure or a more general interface one.
 
@@ -35,7 +35,7 @@ There exist existing methods to do similar things like Design by Introspection. 
 
 ## Description
 
-This DIP is limited to Classes and structs.
+This DIP is limited to classes and structs.
 A signature may have its instance stored on the stack, heap (via malloc for returning with scope) or heap via already constructed memory.
 
 Signatures by their very nature are dynamic. In this DIP they are always templated and any usage of them are inherently templated.
@@ -50,11 +50,13 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
         4. Should a struct instance not be going into a scope'd variable (or being returned without scope) it will be allocated into GC owned memory where it will be moved into, should it be copyable. If it cannot be copied, it is an error.<br/>
 
     2. There may be fields, methods and static functions. Operator overloads are also valid. A signature copies what structs supports here. Attributes that provide protection and storage class allow more restrictive ones into less inside the signature. This allows you to use ``@safe`` and ``@nogc`` as if it wasn't tagged as such. However you may not tag a signature method/field as ``@safe`` and then assign it a ``@system`` method/field.
-    3. There are hidden arguments to a signature, these are aliases and enums. Provided by the syntax ``alias Type;`` and ``enum Value;`` or ``enum Type Value;``. Where it is inferred during implicit construction to come from the source type, in the form of ``Source.Type`` or ``Source.Value``. Anonymous enum members, may also be used as an alternative to ``enum Value;`` syntax. If ``alias Type=...;``, ``enum Name=...;`` or ``enum Type Name=...;`` (including anonymous enum form) refers to ``this`` in anyway, then it will come under the hidden argument resolution rules as above.
+    3. There are hidden arguments to a signature, these are aliases, enums but not values. It is provided by the syntax ``alias Type;``, ``enum Value;`` or ``enum Type Value;``. Manifest enum syntax is not supported.
+       - The value is defined either by evaluating the hidden arguments by ``typeof`` or from the source type (struct/class) definition. By performing ``Source.Type`` or ``Source.Value``.
+       - If at any point ``this`` is refered to as part of types or values in declarations, an error should be given.
     4. ``this`` will always refer to the implementation and never the resolved signature instance itself.
     5. A signature may inherit from others, similar in syntax to interfaces in this manner. However the diamond problem is not valid with signatures. If a field/method/enum/alias is duplicated and is similar, it can be ignored. If it is different (e.g. different types or different attributes) then it is an error at the child signature.
     6. A signature may be null. Because of this ``v is null`` works also for signatures instances.
-    7. Signatures may be cast down for their inheritence. This can be computed statically and does not require any runtime knowledge. However they may not be cast up again. Rules regarding const, immutabe, shared ext. still apply like any other type.
+    7. Signatures may be cast up for their inheritence. This can be computed statically and does not require any runtime knowledge. However they may not be cast down again. Rules regarding const, immutabe, shared ext. still apply like any other type.
     8. Method bodies if provided give a "default" implementation should it not be provided by the child. Removes conditionally defining them.
        - If the given method is on the source type, then the body is ignored as normal.
        - If documented with a body this should be treated as documentation for what it should do.
@@ -69,16 +71,14 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
          ```
 
     9. Signatures may not have constructors. But they all have destructors + postblit and will automatically forward to the implementation if it exists. Otherwise they have empty function bodies.
-    10. Inside of a signature multiple ``alias this`` acts as additional inheritance to the ones defined at the signature name level. This adds no additional logic associated with ``alias this`` and calls into the existing inheritance support.
-    11. Signatures must be specialized when used inside of a signature (e.g. method return/method arg/field). Reference to ones self does not require specialization unless wanting to initiate another hidden parameters. For example the signature ``signature Foo { alias T; Foo func(); }`` is equivalent to ``signature Foo { alias T; typeof(Foo, T=T) func(); }``.
-    12. Usage of signatures as return types and arguments obey the same rules associated with interfaces and classes inside said interfaces/classes hierachies which is covariance and invariance. Patch functions will be required to implement this however and have each version available for casting to parent signatures.
+    10. Signatures must be specialized when used inside of a signature (e.g. method return/method arg/field). Reference to ones self does not require specialization unless wanting to initiate another hidden parameters. For example the signature ``signature Foo { alias T; Foo func(); }`` is equivalent to ``signature Foo { alias T; typeof(Foo, T=T) func(); }``.
+    11. Usage of signatures as return types and arguments obey the same rules associated with interfaces and classes inside said interfaces/classes hierachies which is covariance and invariance. Patch functions will be required to implement this however and have each version available for casting to parent signatures.
    
 2. Extension to ``typeof(Signature, Identifier=Value, ...)``. Where Value can be a type or expression. Evaluates out the hidden arguments to a signature.
-3. Is expression is extended to support checking if a given type is a signature. Unresolved (the hidden arguments) will match ``is(T==signature)``. Resolved signatures will match ``is(T:signature)`` e.g. ``is(T:typeof(Signature, Type=MyType))``. It is unexpected that a library/framework can do much with the prior. For checking if a type is a specific unresolved signature ``is(T:Signature)`` is to be used e.g. ``is(T:Image)``.
-
-    - Evaluated signatures via ``typeof(Signature, Identifier=Value, ...)`` must be compared using ``is(T==U)``, where U is the evaluated type.
-    - The form ``is(Signature2:Signature1)`` will evaluate if Signature2 inherits from Signature1.
-    - If ``is(T:Signature)`` is used inside a static if, it will always return false if the initialization of the given signature is occuring from within another ``is(T:Signature)``. This prevents a diamond dependency problem.
+3. Is expression is extended to support checking if a given type is a signature.
+    - If a type is a signature of any type but is unresolved will match ``is(T==signature)``, for resolved signatures they will match ``is(T:signature)``.
+    - To verify a resolved signature type against an unresolved signature type use ``is(T:Signature)``, against a resolved signature use ``is(T==typeof(Signature, ...)``.
+    - If ``is(T:Signature)`` is evaluated at compile time, it will always return false if the initialization of the given signature is occuring from within another ``is(T:Signature)``. This prevents a diamond dependency problem.
     
                  implementation
                 /              \
@@ -88,7 +88,7 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
 
 4. Template Argument is extended to support checking if is signature e.g. ``void foo(IImage:Image)(IImage theImage) {``.
   This will automatically evaluate the argument passed as ``theImage`` into a unresolved ``Image`` who is resolved as an ``IImage``. See ``is(T:Signature)`` for more information.
-5. A signature may be used as the return type without resolving the hidden arguments. However it will act like auto does, only with a requirement of it matching ``is(T:Signature)``.
+5. A signature may be used as the return type without resolving the hidden arguments. However it will act as auto with a requirement of it matching ``is(T:Signature)``.
 
 TODO: describe its vtable nature.
 
