@@ -10,7 +10,7 @@
 
 ## Abstract
 
-A signature is a static vtable representation of complex objects such as structs and classes. It includes a data pointer as well as pointers to functions and data members in them. They primarily represent heap allocated objects but can take advantage of the stack for scope items. They are very good at presenting behavior and description of objects in a way familiar to D programmers while limiting ugly template if constraints that is hard to read and understand.
+A signature is a static vtable representation of complex objects such as structs and classes. It includes a data pointer as well as pointers to functions and data members in them. They primarily represent heap allocated objects but can take advantage of the stack for scope items. They are very good at presenting behavior and description of objects in a way familiar to D programmers while limiting ugly template if constraints that is hard to read and understand. The addition could lead to cleaner more interchangable code, as well as seeing a high uptake in -betterC codebases.
 
 ### Links
 
