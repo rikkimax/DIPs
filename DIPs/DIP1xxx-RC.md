@@ -54,7 +54,7 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
        - If at any point ``this`` is refered to as part of types or values in declarations, an error should be given.
     4. ``this`` will always refer to the implementation and never the resolved signature instance itself.
     5. A signature may inherit from others, similar in syntax to interfaces in this manner. However the diamond problem is not valid with signatures. If a field/method/enum/alias is duplicated and is similar, it can be ignored. If it is different (e.g. different types or different attributes) then it is an error at the child signature.
-    6. A signature may be null. Because of this ``v is null`` works also for signatures instances.
+    6. The first pointer a signature instance stores is to the data it represents. This can be accessed by ".ptr". If this pointer is null, so is the signature instance. To check for this use ``v is null``.
     7. Signatures may be cast up for their inheritence. This can be computed statically and does not require any runtime knowledge. However they may not be cast down again. Rules regarding const, immutabe, shared ext. still apply like any other type.
     8. Method bodies if provided give a "default" implementation should it not be provided by the child. Removes conditionally defining them.
        - If the given method is on the source type, then the body is ignored as normal.
