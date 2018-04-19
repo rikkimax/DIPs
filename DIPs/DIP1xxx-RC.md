@@ -56,12 +56,12 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
     5. A signature may inherit from others, similar in syntax to interfaces in this manner. However the diamond problem is not valid with signatures. If a field/method/enum/alias is duplicated and is similar, it can be ignored. If it is different (e.g. different types or different attributes) then it is an error at the child signature.
     6. The first pointer a signature instance stores is to the data it represents. This can be accessed by ".ptr". If this pointer is null, so is the signature instance. To check for this use ``v is null``.
     7. Signatures may be cast up for their inheritence. This can be computed statically and does not require any runtime knowledge. However they may not be cast down again. Rules regarding const, immutabe, shared ext. still apply like any other type.
-    8. Method bodies if provided give a "default" implementation should it not be provided by the child. Removes conditionally defining them.
-       - If the given method is on the source type, then the body is ignored as normal.
-       - If documented with a body this should be treated as documentation for what it should do.
-       - The body is initialized in the child type, not in the parent.
+    8. A Method body may be provided, in addition or alternatively you may provide function bodies by using the default attribute to associate a filter to pick which body to use. If multiple match the first to compile will be used, else it will be an error in the implementation.
+        Given a chosen method body:
+        - If the given method is on the source type, then the body is ignored as normal.
+        - The body is initialized in the child type, not in the parent.
          The below code will result in the output of ``Child``'s mangled name, not ``Parent``'s.
-
+         
          ```D
          signature Parent {
             void func() { __traits(parent, func).mangleof }
@@ -88,6 +88,7 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
 4. Template Argument is extended to support checking if is signature e.g. ``void foo(IImage:Image)(IImage theImage) {``.
   This will automatically evaluate the argument passed as ``theImage`` into a unresolved ``Image`` who is resolved as an ``IImage``. See ``is(T:Signature)`` for more information.
 5. A signature may be used as the return type without resolving the hidden arguments. However it will act as auto with a requirement of it matching ``is(T:Signature)``.
+6. The default keyword is made into an attribute of the form ``default(Filters...) { ... }`` where Filters is a comma seperated list of signatures (unresolved) and may have a ``!`` before it to negate it. I.e. ``default(Bird, !Lizard) { return 2; }``
 
 ### Breaking changes / deprecation process
 
@@ -141,6 +142,17 @@ EnumDeclaration:
 AliasDeclarationY:
     ...
     Identifier
+
+Attribute:
+    ...
+    default ( SignatureDefaultArgs|opt ) FunctionBody
+    
+SignatureDefaultArgs:
+    SignatureDefaultArg
+    SignatureDefaultArgs , SignatureDefaultArg
+    
+SignatureDefaultArg:
+    !|opt Type
 ```
 
 Where:
