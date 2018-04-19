@@ -74,7 +74,7 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
     11. Usage of signatures as return types and arguments obey the same rules associated with interfaces and classes inside said interfaces/classes hierachies which is covariance and invariance. Patch functions will be required to implement this however and have each version available for casting to parent signatures.
    
 2. Extension to ``typeof(Signature, Identifier=Value, ...)``. Where Value can be a type or expression. Evaluates out the hidden arguments to a signature.
-3. Is expression is extended to support checking if a given type is a signature.
+3. Is expression is extended to support checking if a given type is a signature. Ignores ``default`` attributes.
     - If a type is a signature of any type but is unresolved will match ``is(T==signature)``, for resolved signatures they will match ``is(T:signature)``.
     - To verify a resolved signature type against an unresolved signature type use ``is(T:Signature)``, against a resolved signature use ``is(T==typeof(Signature, ...)``.
     - If ``is(T:Signature)`` is evaluated at compile time, it will always return false if the initialization of the given signature is occuring from within another ``is(T:Signature)``. This prevents a diamond dependency problem.
