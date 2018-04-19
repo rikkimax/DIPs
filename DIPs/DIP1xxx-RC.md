@@ -69,7 +69,7 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
          signature Child : Parent {}
          ```
 
-    9. Signatures may not have constructors. But they all have destructors + postblit and will automatically forward to the implementation if it exists. Otherwise they have empty function bodies.
+    9. Signatures may not have constructors. Destructors and postblit do exist and can be defined but must have a body. They are methods like classes and automatically have calls to ``super()`` in them. To access the destructor of the implementation simply use ``this.__dtor();``, as this will occur within the body of method which is considered the "fallback" it will be initialized and set by the implementation correctly.
     10. Signatures must be specialized when used inside of a signature (e.g. method return/method arg/field). Reference to ones self does not require specialization unless wanting to initiate another hidden parameters. For example the signature ``signature Foo { alias T; Foo func(); }`` is equivalent to ``signature Foo { alias T; typeof(Foo, T=T) func(); }``.
     11. Usage of signatures as return types and arguments obey the same rules associated with interfaces and classes inside said interfaces/classes hierachies which is covariance and invariance. Patch functions will be required to implement this however and have each version available for casting to parent signatures.
    
