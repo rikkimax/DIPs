@@ -88,7 +88,7 @@ Signatures by their very nature are dynamic. In this DIP they are always templat
 4. Template Argument is extended to support checking if is signature e.g. ``void foo(IImage:Image)(IImage theImage) {``.
   This will automatically evaluate the argument passed as ``theImage`` into a unresolved ``Image`` who is resolved as an ``IImage``. See ``is(T:Signature)`` for more information.
 5. A signature may be used as the return type without resolving the hidden arguments. However it will act as auto with a requirement of it matching ``is(T:Signature)``.
-6. The default keyword is made into an attribute of the form ``default(Filters...) { ... }`` where Filters is a comma seperated list of signatures (unresolved) and may have a ``!`` before it to negate it. I.e. ``default(Bird, !Lizard) { return 2; }``. The filters when performing validation ignore other ``default`` attributes i.e. to ignore for all Bird's, in a Lizard use ``default(Bird)``.
+6. The default keyword is made into an attribute of the form ``default(Filters...) { ... }`` where Filters is a comma seperated list of signatures (unresolved) and may have a ``!`` before it to negate it. I.e. ``default(Bird, !Lizard) { return 2; }``. The filters when performing validation ignore other ``default`` attributes i.e. to ignore for all Bird's, in a Lizard use ``default(!Bird)``.
 
 ### Breaking changes / deprecation process
 
