@@ -47,6 +47,8 @@ At the center of this DIP is the type [``signature``](type.md). It introduces a 
 
 In [resolving](resolving.md) introduces the concept of resolving a ``signature`` type, into an resolved type and what is required to do this with the hidden arguments.
 
+Later in [link](bodies.md) function bodies are defined as supported along with support for a new attribute ``default(...)`` to add impressive new behavior for adaption to other signatures types for the implementation without the use of ``static if``.
+
 ### Breaking changes / deprecation process
 
 The primary breaking change is the token ``signature`` is becoming a keyword.
