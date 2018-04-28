@@ -48,3 +48,10 @@ SignatureTemplateDeclaration:
     signature Identifier TemplateParameters Constraint|opt : IdentifierList AggregateBody
     signature Identifier TemplateParameters : IdentifierList Constraint|opt AggregateBody
 ```
+## Copyright & License
+
+Copyright (c) 2017 by the D Language Foundation
+
+Licensed under [Creative Commons Zero 1.0](https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt)
+
+## Review
