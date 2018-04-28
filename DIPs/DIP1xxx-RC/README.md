@@ -13,7 +13,7 @@
 A signature is a static vtable representation of complex objects such as structs and classes.
 They primarily represent heap allocated objects but can take advantage of the stack for scope.
 
-They are very good at presenting behavior and description of objects in a way familiar to D programmers while limiting ugly template if constraints that is hard to read and understand. The addition could lead to cleaner more interchangable code, as well as seeing a higher uptake in -betterC codebases.
+They are very good at presenting behavior and description of objects in a way familiar to D programmers while limiting _template if constraints_ that is hard to read and understand. The addition could lead to cleaner more interchangable code, as well as seeing a higher uptake in -betterC codebases.
 
 ### Links
 
