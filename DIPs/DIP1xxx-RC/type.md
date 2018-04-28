@@ -19,6 +19,7 @@ This part of the DIP adds the signature type. It provides the basic type, but do
 5. The first pointer a signature instance stores is to the data it represents. This can be accessed by ".ptr". If this pointer is null, so is the signature instance. To check for this use ``v is null``.
 6. Signatures may be cast up for their inheritence. This can be computed statically and does not require any runtime knowledge. However they may not be cast down again. Rules regarding const, immutabe, shared ext. still apply like any other type.
 7. Method bodies may not be provided except for static methods (who cannot be assigned by the implementation).
+8. Usage of signatures as return types and arguments obey the same rules associated with interfaces and classes inside said interfaces/classes hierachies which is covariance and invariance. Patch functions will be required to implement this however and have each version available for casting to parent signatures.
 
 # BNF changes
 
