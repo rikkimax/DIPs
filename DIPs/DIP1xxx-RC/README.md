@@ -31,7 +31,7 @@ Supplementary code is provided by the author in the [repository](https://github.
 
 In the D community we utilize idioms and design patterns which emphasize template usage. Template usage enables high code reuse but it also causes code bloat with quite horrendous error messages. These supplementary outcomes are not positive for both new and existing users in understanding why a template does not succeed.
 
-At the core of the problem, we aim to pass around types based upon a statically known interface without knowledge of what the implementation is during compilation. It is quite common for when template conditions failure at a function level, to not know if it is because of a function specific specialization failure or a more general interface one.
+At the core of the problem, we aim to pass around types based upon a statically known interface without knowledge of what the implementation is during compilation. It is quite common when template conditions fail at a function level, to not know if it is because of a function specific specialization failure or a more general interface one of the arguments.
 
 The goal of signatures in this DIP is to present a language construct that is familiar to the (S)ML developers but also ties into how it would be used by the D community. So in our case, signatures are stack heavy constructs that can be made from either structs or classes. They have a statically created virtual table that may be assigned functions at runtime with patching to make an implementation match the interface. This allows a runtime decision of the implementation but a static compile-time design for what it must describe.
 
