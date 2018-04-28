@@ -43,9 +43,9 @@ This DIP has been split into multiple seperate documents. The size of signatures
 
 ### Additions
 
-At the center of this DIP is the type [``signature``](type.md). It introduces a type similar to a struct with each member field and method being a pointer/delegate instead of the value itself transparently. Additional changes are provided by [misc](misc.md) which give convenient behaviral support to match ``struct``'s and classes.
+At the center of this DIP is the type [``signature``](type.md). It introduces a type similar to a struct with each member field and method being a pointer/delegate instead of the value itself transparently. Additional changes are provided by [misc](misc.md) which gives convenient behavioral support to match ``struct``'s and classes.
 
-In [resolving](resolving.md) introduces the concept of resolving a ``signature`` type, into an resolved type and what is required to do this.
+In [resolving](resolving.md) introduces the concept of resolving a ``signature`` type, into an resolved type and what is required to do this with the hidden arguments.
 
 ### Breaking changes / deprecation process
 
