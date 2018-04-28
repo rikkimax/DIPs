@@ -35,7 +35,7 @@ At the core of the problem, we aim to pass around types based upon a statically 
 
 The goal of signatures in this DIP is to present a language construct that is familiar to the (S)ML developers but also ties into how it would be used by the D community. So in our case, signatures are stack heavy constructs that can be made from either structs or classes. They have a statically created virtual table that may be assigned functions at runtime with patching to make an implementation match the interface. This allows a runtime decision of the implementation but a static compile-time design for what it must describe.
 
-Methods exist that do similar things like Design by Introspection. They do not become obsolete instead, they become stronger more useful in customizing behavior using more concrete types. Allowing for cleaner interfaces and most importantly, a focus on concepts not code "versions" of them.
+Methods exist that do similar things like _Design by Introspection_. They do not become obsolete instead, they become stronger more useful in customizing behavior using more concrete types. Allowing for cleaner interfaces and most importantly, a focus on concepts not code "versions" of them.
 
 ## Description
 
@@ -44,6 +44,13 @@ This DIP has been split into multiple seperate documents. The size of signatures
 ### Additions
 
 At the center of this DIP is the type [``signature``](type.md). It introduces a type similar to a struct with each member field and method being a pointer/delegate instead of the value itself transparently. Additional changes are provided by [misc](misc.md) which give convenient behaviral support to match ``struct``'s and classes.
+
+In [resolving](resolving.md) introduces the concept of resolving a ``signature`` type, into an resolved type and what is required to do this.
+
+### Breaking changes / deprecation process
+
+The primary breaking change is the token ``signature`` is becoming a keyword.
+Existing code that uses it would need to rename existing symbols and variables but nothing requiring major changes.
 
 ## Copyright & License
 
