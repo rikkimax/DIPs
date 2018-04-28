@@ -19,6 +19,9 @@ This part of the DIP adds ``signature`` resolving. Resolving is the process of d
   This will automatically evaluate the argument passed as ``theImage`` into a unresolved ``Image`` who is resolved as an ``IImage``. See ``is(T:Signature)`` for more information.
 4. A signature may be used as the return type without resolving the hidden arguments. However it will act as auto with a requirement of it matching ``is(T:Signature)``.
 5. Without any hidden arguments supplied, an unresolved signature type must still be resolved, just without any arguments provided to ``typeof``.
+6. There are hidden arguments to a signature, these are aliases, enums but not values. It is provided by the syntax ``alias Type;``, ``enum Value;`` or ``enum Type Value;``. Manifest enum syntax is not supported.
+    - The value is defined either by evaluating the hidden arguments by ``typeof`` or from the source type (struct/class) definition. By performing ``Source.Type`` or ``Source.Value``.
+    - If at any point ``this`` is refered to as part of types or values in declarations, an error should be given.
 
 # BNF changes
 
