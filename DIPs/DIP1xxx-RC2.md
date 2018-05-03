@@ -25,7 +25,7 @@ See Q&A session with Walter and Andrei at DConf 2018.
 
 ## Rationale
 
-Shared as a concept currently is incomplete and ill designed. This DIP adds a replacement design in its place which is both simpler and more coherant.
+Shared as a concept currently is incomplete and ill designed. This DIP adds a replacement design in its place which is both simpler and more coherent.
 
 ## Description
 
