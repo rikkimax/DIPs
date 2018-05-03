@@ -41,6 +41,8 @@ As an attribute applied to variable declarations it acts as the type qualifier l
 When the attribute is applied to a struct or class/interface, it marks it (and for a class/interface its children too) as readable for fields and callable for methods.
 If you have a pointer/reference to a class or struct not marked as shared that has type qualified to be ``shared``, it will be inaccessable and no methods including postblit or destructor can be called. Even if postblit is enabled in a struct, but it is not marked as shared when qualified as such, you may not copy it out of the pointer.
 
+Once the attribute has been applied to a class/interface hierachy, all children have it applied automatically. There is no way to get rid of it. In terms of the vtable, the ``shared`` methods acts as if it isn't ``shared`` when overriding the parent. However all methods not overriden or ``abstract`` will be reinitialized (using the parents body and scope) in the child (with shared turned on) to ensure ``shared`` safety still exists in the form of atomic operations and type verification.
+
 ### Grammar changes
 
 ```diff
@@ -121,6 +123,7 @@ void something() {
 ```
 
 Structs:
+
 ```D
 import std.stdio;
 
@@ -170,6 +173,30 @@ void meh() {
 
 	Bar* b2 = new Bar(7); // error, type is shared but the reference is not
 }
+```
+
+Attribute applied and how it affects function pointers:
+
+```D
+struct A {
+	void func() {}
+	static void func2() {}
+}
+
+shared struct B {
+	void func() {}
+	static void func2() {}
+}
+
+void bar() {}
+shared void bar2() {}
+
+static assert(is(typeof(&(new A).func) == void delegate()));
+static assert(is(typeof(&(new B).func) == void delegate() shared));
+static assert(is(typeof(&bar) == void function()));
+static assert(is(typeof(&bar2) == void function()));
+static assert(is(typeof(&A.func2) == void function()));
+static assert(is(typeof(&B.func2) == void function()));
 ```
 
 ## Breaking Changes and Deprecations
