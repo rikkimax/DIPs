@@ -43,6 +43,10 @@ If you have a pointer/reference to a class or struct not marked as shared that h
 
 Once the attribute has been applied to a class/interface hierachy, all children have it applied automatically. There is no way to get rid of it. In terms of the vtable, the ``shared`` methods acts as if it isn't ``shared`` when overriding the parent. However all methods not overriden or ``abstract`` will be reinitialized (using the parents body and scope) in the child (with shared turned on) to ensure ``shared`` safety still exists in the form of atomic operations and type verification.
 
+Templated methods in classes will behave like their non-templated variants, except if the child is shared then if it interacts with any field that is not ``shared`` it will error. The same restriction for in calling non-templated methods does not exist.
+
+A non-``shared`` parent of a ``shared`` class may not have any public non-``shared`` fields. Protected and private are ok because any accesses and modifications by the methods, will have their bodies reinitialized in the child with protection and ``shared`` safety intact.
+
 ### Grammar changes
 
 ```diff
@@ -197,6 +201,29 @@ static assert(is(typeof(&bar) == void function()));
 static assert(is(typeof(&bar2) == void function()));
 static assert(is(typeof(&A.func2) == void function()));
 static assert(is(typeof(&B.func2) == void function()));
+```
+
+Inheritance
+
+```D
+class Root {
+	private int x;
+	protected int y;
+	int z;
+	shared int w;
+
+	void func(int newX) {
+		this.x = newX; // will be an atomicStore from within Next, otherwise straight assignment
+		this.y = newX+3; // will be an atomicStore from within Next, otherwise straight assignment
+	}
+
+	void func2()(int newZ) {
+		this.z = newZ; // if child Next then error, if implementation is Root then ok
+	}
+}
+
+// error z is public, but w is ok
+shared class Next : Root {}
 ```
 
 ## Breaking Changes and Deprecations
