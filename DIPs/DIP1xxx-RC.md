@@ -15,7 +15,11 @@ Named arguments are seperated from unnamed, to allow differentiation and easier 
 
 ### Reference
 
-DIP88
+There have been many conversations on D's NewsGroup attempting to suggest named arguments. For example [1](https://forum.dlang.org/post/khcalesvxwdaqnzaqotb@forum.dlang.org) and [2](https://forum.dlang.org/post/n8024o$dlj$1@digitalmars.com).
+
+Multiple library solutions have been attempted [1](https://forum.dlang.org/post/awjuoemsnmxbfgzhgkgx@forum.dlang.org) and [2](https://github.com/CyberShadow/ae/blob/master/utils/meta/args.d). Both of which do work.
+
+A [DIP](https://wiki.dlang.org/DIP88) (88) was has been drafted, but never PR'd.
 
 ## Contents
 * [Rationale](#rationale)
@@ -26,11 +30,11 @@ DIP88
 
 ## Rationale
 
-There have been many conversations on D's NewsGroup attempting to suggest named arguments. For example [1](https://forum.dlang.org/post/khcalesvxwdaqnzaqotb@forum.dlang.org) and [2](https://forum.dlang.org/post/n8024o$dlj$1@digitalmars.com).
+Named arguments are a fairly popular language feature from dynamic languages which has been very highly requested on D's NewsGroup. It is available in Objective-C so it is also compatibility issue not just an enhancement for D.
 
 ## Description
 
-Named arguments are not affected by the passing of unnamed arguments in terms of order. Start, middle or end; it does not matter where they go. So ``func(1, 2, o=true)`` is the same as ``func(1, o=true, 2)`` or ``func(o=true, 1, 2)``.
+Named arguments are not affected by the passing of unnamed arguments in terms of order. Start, middle or end; it does not matter where they go. So ``func(1, 2, o:=true)`` is the same as ``func(1, o:=true, 2)`` or ``func(o:=true, 1, 2)``.
 
 At the template side, if the template arguments does not have any non-named arguments you may omit the curved brackets. So ``struct Foo(<T>) {}`` is equivalent to ``struct Foo<T> {}``.
 
@@ -43,13 +47,27 @@ Named arguments may be specified on structs, classes and unions. As well as func
 struct MyWorld<string Name> {
 }
 
-static assert(MyWorld!(Name="Earth").Name) == "Earth");
+static assert(MyWorld!(Name:="Earth").Name) == "Earth");
+
+void hello(<string message="world!">) {
+	import std.stdio;
+	writeln("hello ", message);
+}
+
+void main() {
+	// Will print "Hello Walter"
+	hello(message := "Walter");
+}
 ```
 
 This feature is quite convenient because it means that variadic template arguments and variadic function arguments can come before named arguments. So:
 
 ```D
-void func(T..., <alias FreeFunc>)(T, bool shouldFree=false) {
+void func(T..., <alias FreeFunc>)(T t, <bool shouldFree=false>) {
+}
+
+void abc() {
+	func!(FreeFunc := &someRandomFunc)(1, 2, 3, shouldFree := true);
 }
 ```
 
@@ -61,27 +79,13 @@ For convenience at the definition side, you may combine named arguments together
 struct TheWorld<string Name, Type> {
 }
 
-alias YourWorld = TheWorld!(Name="Here", Type=size_t);
+alias YourWorld = TheWorld!(Name:="Here", Type:=size_t);
 
 void goodies(T, <T t>, <U:class=Object>)(string text) {
 }
 
-alias myGoodies = goodies!(int, t=8);
-alias myOtherGoodies = goodies!(U=Exception, string, T="hi!");
-```
-
-When you have a named argument and a variable, the named argument will be preferred. If it does not match, it is an error.
-
-```D
-void func(int a, int b = 6) {}
-
-void main() {
-	int z;
-	func(1, b=2); // named argument
-	func(z=3); // assignment
-	int b;
-	func(2, b=4); // named argument
-}
+alias myGoodies = goodies!(int, t:=8);
+alias myOtherGoodies = goodies!(U:=Exception, string, t := "hi!");
 ```
 
 Any symbol that has named arguments, the named arguments are not considered for overload resolution. This puts a requirement on the unnamed arguments being unique and easily resolved.
@@ -90,10 +94,10 @@ Any symbol that has named arguments, the named arguments are not considered for 
 
 ```diff
 TemplateParameters:
-+    TemplateParameter
++    < NamedTemplateParameterList|opt >
 
 TemplateParameter:
-+    < NamedTemplateParameterList >
++    < NamedTemplateParameterList|opt >
 
 + NamedTemplateParameterList:
 +    NamedTemplateParameter
@@ -113,18 +117,23 @@ TemplateArgument:
 +     NamedTemplateArgument , NamedTemplateArgumentList
 
 + NamedTemplateArgument:
-+     Identifier = TemplateArgument
++     Identifier := TemplateArgument
 
 Parameter:
-+   Identifier = ConditionalExpression
++   < NamedParameterList|opt >
+
++ NamedParameterList:
++    Parameter
++    Parameter ,
++    Parameter , NamedParameterList
+
++ NamedArgument:
++    Identifier := ConditionalExpression
 ```
 
 ## Breaking Changes and Deprecations
 
 No breaking changes are expected.
-
-Using assignment inside a function call, assigns the value to the variable. This could possibly cause problems, but because named arguments are new with preference to it, this should not be an issue. Template arguments assignment isn't valid. 
-
 Angle brackets are not a valid start or end of template parameter or function argument.
 
 
