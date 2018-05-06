@@ -37,15 +37,15 @@ chances of the DIP being understood and carefully evaluated.
 
 Adds named arguments to templates and functions.
 
-Named arguments do not affect the passing of unnamed arguments in terms of order. Start, middle or end and it does not matter where they go. So ``func(1, 2, o=true)`` is the same as ``func(1, o=true, 2)`` and ``func(o=true, 1, 2)``.
+Named arguments do not affect the passing of unnamed arguments in terms of order. Start, middle or end; it does not matter where they go. So ``func(1, 2, o=true)`` is the same as ``func(1, o=true, 2)`` or ``func(o=true, 1, 2)``.
 
-At the template side, if the template arguments does not have any non-named arguments you may omit the curved brackets. So ``struct Foo(<T>) {}`` becomes ``struct Foo<T> {}``.
+At the template side, if the template arguments does not have any non-named arguments you may omit the curved brackets. So ``struct Foo(<T>) {}`` is equivalent to ``struct Foo<T> {}``.
 
 If a named argument does not have a default value, it must be assigned or it is an error.
 
-Named arguments may be specified on structs, classes and unions. As well as functions and methods. When used with structs, classes and unions named arguments may be accsed by their identifier. E.g.
+Named arguments may be specified on structs, classes and unions. As well as functions and methods. When used with structs, classes and unions named arguments may be accessed by their identifier. E.g.
 
-Because named arguments can be in any order, they cannot have values depending on each other.
+Named arguments can be in any order, they cannot have values depending on each other, default or otherwise.
 
 ```D
 struct MyWorld<string Name> {
@@ -54,7 +54,7 @@ struct MyWorld<string Name> {
 static assert(MyWorld!(Name="Earth").Name) == "Earth");
 ```
 
-For convenience at the definition side, you may combine named arguments together or keep them seperate, its up to you.
+For convenience at the definition side, you may combine named arguments together or keep them seperate, it is up to you.
 
 ```D
 struct TheWorld<string Name, Type> {
