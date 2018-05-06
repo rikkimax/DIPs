@@ -10,9 +10,8 @@
 
 ## Abstract
 
-Required.
-
-Short and concise description of the idea in a few lines.
+Adds named arguments to templates and functions.
+Named arguments are seperated from unnamed, to allow differentiation and easier access by the user.
 
 ### Reference
 
@@ -27,15 +26,9 @@ DIP88
 
 ## Rationale
 
-Required.
-
-A short motivation about the importance and benefits of the proposed change.  An existing,
-well-known issue or a use case for an existing projects can greatly increase the
-chances of the DIP being understood and carefully evaluated.
+There have been many conversations on D's NewsGroup attempting to suggest named arguments. For example [1](https://forum.dlang.org/post/khcalesvxwdaqnzaqotb@forum.dlang.org) [2](https://forum.dlang.org/post/n8024o$dlj$1@digitalmars.com)
 
 ## Description
-
-Adds named arguments to templates and functions.
 
 Named arguments do not affect the passing of unnamed arguments in terms of order. Start, middle or end; it does not matter where they go. So ``func(1, 2, o=true)`` is the same as ``func(1, o=true, 2)`` or ``func(o=true, 1, 2)``.
 
@@ -78,6 +71,21 @@ alias myGoodies = goodies!(int, t=8);
 alias myOtherGoodies = goodies!(U=Exception, string, T="hi!");
 ```
 
+When you have a named argument and a variable, the named argument will be preferred. If it does not match, it is an error.
+
+```D
+void func(int a, int b = 6) {}
+
+void main() {
+	int z;
+	func(1, b=2); // named argument
+	func(z=3); // assignment
+	int b;
+	func(2, b=4); // named argument
+}
+
+```
+
 ### Grammar changes
 
 ```diff
@@ -115,9 +123,9 @@ Parameter:
 
 No breaking changes are expected.
 
-Using equals in templates parameters or function call arguments should already be recognised as an error.
+Using assignment inside a function call, assigns the value to the variable. This could possibly cause problems, but because named arguments are new with preference to it, this should not be an issue. Template arguments assignment isn't valid. 
 
-Angle brackets are not valid start or end of template parameter or function argument.
+Angle brackets are not a valid start or end of template parameter or function argument.
 
 
 ## Copyright & License
