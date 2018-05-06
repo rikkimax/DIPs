@@ -54,6 +54,15 @@ struct MyWorld<string Name> {
 static assert(MyWorld!(Name="Earth").Name) == "Earth");
 ```
 
+This feature is quite convenient because it means that variadic template arguments and variadic function arguments can come before named arguments. So:
+
+```D
+void func(T..., <alias FreeFunc>)(T, bool shouldFree=false) {
+}
+```
+
+Is in fact valid.
+
 For convenience at the definition side, you may combine named arguments together or keep them seperate, it is up to you.
 
 ```D
@@ -85,6 +94,7 @@ TemplateParameter:
 
 + NamedTemplateParameter:
 +    Identifier = TemplateParameter
++    alias Identifier
 
 TemplateArgument:
 +   NamedTemplateArgumentList
