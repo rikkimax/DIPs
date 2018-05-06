@@ -26,19 +26,18 @@ DIP88
 
 ## Rationale
 
-There have been many conversations on D's NewsGroup attempting to suggest named arguments. For example [1](https://forum.dlang.org/post/khcalesvxwdaqnzaqotb@forum.dlang.org) [2](https://forum.dlang.org/post/n8024o$dlj$1@digitalmars.com)
+There have been many conversations on D's NewsGroup attempting to suggest named arguments. For example [1](https://forum.dlang.org/post/khcalesvxwdaqnzaqotb@forum.dlang.org) and [2](https://forum.dlang.org/post/n8024o$dlj$1@digitalmars.com).
 
 ## Description
 
-Named arguments do not affect the passing of unnamed arguments in terms of order. Start, middle or end; it does not matter where they go. So ``func(1, 2, o=true)`` is the same as ``func(1, o=true, 2)`` or ``func(o=true, 1, 2)``.
+Named arguments are not affected by the passing of unnamed arguments in terms of order. Start, middle or end; it does not matter where they go. So ``func(1, 2, o=true)`` is the same as ``func(1, o=true, 2)`` or ``func(o=true, 1, 2)``.
 
 At the template side, if the template arguments does not have any non-named arguments you may omit the curved brackets. So ``struct Foo(<T>) {}`` is equivalent to ``struct Foo<T> {}``.
 
 If a named argument does not have a default value, it must be assigned or it is an error.
-
-Named arguments may be specified on structs, classes and unions. As well as functions and methods. When used with structs, classes and unions named arguments may be accessed by their identifier. E.g.
-
 Named arguments can be in any order, they cannot have values depending on each other, default or otherwise.
+
+Named arguments may be specified on structs, classes and unions. As well as functions and methods. When used with structs, classes or unions named arguments may be accessed by their identifier. E.g.
 
 ```D
 struct MyWorld<string Name> {
@@ -83,8 +82,9 @@ void main() {
 	int b;
 	func(2, b=4); // named argument
 }
-
 ```
+
+Any symbol that has named arguments, the named arguments are not considered for overload resolution. This puts a requirement on the unnamed arguments being unique and easily resolved.
 
 ### Grammar changes
 
