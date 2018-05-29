@@ -34,13 +34,13 @@ Named arguments are a fairly popular language feature from dynamic languages whi
 
 Unlike other languages however, this DIP does not aid in having all or even most arguments to be in _any_ order. The majority of arguments should remain ordered; this aids in readability and tooling. This removes a lot of potential problems which has been discussed and highly disliked within the D community about this concept.
 
-As a D only feature, it gives us more ways to describe interfaces in their usage but not what happens inside them. The decision to focus upon publically accessible aspects of an API using named arguments instead of their internals is to help make code clearer with preference of decreasing the number of template initations. A great example of this is ``max(a := 1, b := 3)`` is not more readable or understandable than ``max(1, 3)``. But ``MyInputRange!(Foo).Type`` is better than ``ElementType!(MyInputRange!(Foo))`` and describes that much more clearer that the type of the input range is clearly owned by ``MyInputRange`` not the mythical ``ElementType`` template.
+As a D only feature, it gives us more ways to describe interfaces in their usage but not what happens inside them. The decision to focus upon publically accessible aspects of an API using named arguments instead of their internals is to help make code clearer with preference of decreasing the number of template initations. A great example of this is ``max(a : 1, b : 3)`` is not more readable or understandable than ``max(1, 3)``. But ``MyInputRange!(Foo).Type`` is better than ``ElementType!(MyInputRange!(Foo))`` and describes that much more clearer that the type of the input range is clearly owned by ``MyInputRange`` not the mythical ``ElementType`` template.
 
 ## Description
 
 This DIP adds a second kind of argument/parameter, named. Alternative names is ordered and unordered arguments. Ordered arguments is the current arrangement requiring that all argument be passed in the same order of the parameters defining them. But with unordered arguments, they can appear in any order or if specified to be optional at the parameter side, not at all.
 
-Named arguments are not affected by the passing of unnamed arguments. It does not matter where they go. So ``func(1, 2, o:=true)`` is the same as ``func(1, o:=true, 2)`` or ``func(o:=true, 1, 2)``.
+Named arguments are not affected by the passing of unnamed arguments. It does not matter where they go. So ``func(1, 2, o:true)`` is the same as ``func(1, o:true, 2)`` or ``func(o:true, 1, 2)``.
 
 At the template side, if the template arguments does not have any unnamed arguments you may omit the curved brackets. So ``struct Foo(<T>) {}`` is equivalent to ``struct Foo<T> {}``.
 
@@ -53,7 +53,7 @@ Named arguments may be specified on structs, classes, unions, template blocks an
 struct MyWorld<string Name> {
 }
 
-static assert(MyWorld!(Name:="Earth").Name) == "Earth");
+static assert(MyWorld!(Name:"Earth").Name) == "Earth");
 
 void hello(<string message="world!">) {
 	import std.stdio;
@@ -62,7 +62,7 @@ void hello(<string message="world!">) {
 
 void main() {
 	// Will print "Hello Walter"
-	hello(message := "Walter");
+	hello(message : "Walter");
 }
 ```
 
@@ -73,7 +73,7 @@ void func(T..., <alias FreeFunc>)(T t, <bool shouldFree=false>) {
 }
 
 void abc() {
-	func!(FreeFunc := &someRandomFunc)(1, 2, 3, shouldFree := true);
+	func!(FreeFunc : &someRandomFunc)(1, 2, 3, shouldFree : true);
 }
 ```
 
@@ -85,13 +85,13 @@ For convenience at the definition side, you may combine named arguments together
 struct TheWorld<string Name, Type> {
 }
 
-alias YourWorld = TheWorld!(Name:="Here", Type:=size_t);
+alias YourWorld = TheWorld!(Name:"Here", Type:size_t);
 
 void goodies(T, <T t>, <U:class=Object>)(string text) {
 }
 
-alias myGoodies = goodies!(int, t:=8);
-alias myOtherGoodies = goodies!(U:=Exception, string, t := "hi!");
+alias myGoodies = goodies!(int, t:8);
+alias myOtherGoodies = goodies!(U:Exception, string, t : "hi!");
 ```
 
 Any symbol that has named arguments, the named arguments are not considered for overload resolution. This puts a requirement on the unnamed arguments being unique and easily resolved.
@@ -123,7 +123,7 @@ TemplateArgument:
 +     NamedTemplateArgument , NamedTemplateArgumentList
 
 + NamedTemplateArgument:
-+     Identifier := TemplateArgument
++     Identifier : TemplateArgument
 
 Parameter:
 +   < NamedParameterList|opt >
@@ -134,7 +134,7 @@ Parameter:
 +    Parameter , NamedParameterList
 
 + NamedArgument:
-+    Identifier := ConditionalExpression
++    Identifier : ConditionalExpression
 ```
 
 ## Breaking Changes and Deprecations
