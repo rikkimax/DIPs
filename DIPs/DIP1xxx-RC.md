@@ -142,6 +142,47 @@ TraitsKeyword:
 +    getNamedParameters
 ```
 
+### Use cases
+
+#### Ranges
+
+Removes the usage of ``ElementType`` and initiations of it by making the type used a member.
+
+```D
+struct Adder<SourceType, Type> {
+    SourceType source;
+    Type toAdd;
+
+    @property {
+        Type front() {
+            return source.front() + toAdd;
+        }
+        
+        bool empty() {
+            return source.empty();
+        }
+    }
+    
+    void popFront() {
+        source.popFront();
+    }
+}
+
+auto adder(Source)(Source source, Source.Type toAdd) {
+    return Adder!(SourceType: Source, Type: Source.Type)(source, toAdd);
+}
+```
+
+#### Logging
+
+Overridable but no longer interacts poorly with other arguments. Requiring no smelly work arounds.
+
+```D
+void log(T...)(T args, <string moduleName = __MODULE__, uint lineNumber = __LINE__>) {
+    writeln(moduleName, "[", lineNumber, "] ", args);
+}
+```
+
 ## Breaking Changes and Deprecations
 
 No breaking changes are expected.
