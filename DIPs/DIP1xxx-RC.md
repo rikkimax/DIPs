@@ -149,7 +149,7 @@ TraitsKeyword:
 Removes the usage of ``ElementType`` and initiations of it by making the type used a member.
 
 ```D
-struct Adder<SourceType, Type> {
+struct Adder<SourceType, Type=SourceType.Type> {
     SourceType source;
     Type toAdd;
 
