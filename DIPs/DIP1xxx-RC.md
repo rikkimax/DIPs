@@ -183,6 +183,32 @@ void log(T...)(T args, <string moduleName = __MODULE__, uint lineNumber = __LINE
 }
 ```
 
+## Future proposals
+
+This DIP can be expanded upon to catch more use cases (but would make a much more complex initial one).
+Here are some ideas for future DIP's.
+
+### API Alias parameters
+
+Alias attribute to renamed parameters (templates and function ones).
+
+```D
+void func(int foo, string bar)
+alias(foo=[food, foo2], bar=offset) {}
+```
+
+Multiple attributes could be applied but you must pick one set of identifiers used inside a single attribute e.g. either "foo", "food" or "foo2" and either "bar" or "offset" at call/initaition site.
+
+Identifiers should note overlap between attributes so:
+
+```D
+void func(int foo, string bar)
+alias(foo=baz, bar=har)
+alias(foo=val, bar=baz)
+```
+
+Would not be valid. So that any combination can be used freely within its scope.
+
 ## Breaking Changes and Deprecations
 
 No breaking changes are expected.
