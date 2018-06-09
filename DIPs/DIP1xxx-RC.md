@@ -42,7 +42,7 @@ This DIP adds a second kind of argument/parameter, named. Alternative names is o
 
 Named arguments are not affected by the passing of unnamed arguments. It does not matter where they go. So ``func(1, 2, o:true)`` is the same as ``func(1, o:true, 2)`` or ``func(o:true, 1, 2)``.
 
-At the template side, if the template arguments does not have any unnamed arguments you may omit the curved brackets. So ``struct Foo(<T>) {}`` is equivalent to ``struct Foo<T> {}``.
+At the template side, if it is not a function and the template parameters does not have any unnamed parameters you may omit the curved brackets. So ``struct Foo(<T>) {}`` is equivalent to ``struct Foo<T> {}``.
 
 If a named argument does not have a default value, it must be assigned or it is an error.
 Named arguments can be in any order, they cannot have values depending on each other, default or otherwise.
