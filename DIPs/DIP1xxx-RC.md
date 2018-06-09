@@ -188,6 +188,11 @@ void log(T...)(T args, <string moduleName = __MODULE__, uint lineNumber = __LINE
 This DIP can be expanded upon to catch more use cases (but would make a much more complex initial one).
 Here are some ideas for future DIP's.
 
+### Restrictions
+
+This DIP has a very loose definition of the parameters/arguments. In other languages they have ordering and other restrictions in place.
+While this is a point of contention, this DIP will not address them directly. Instead adding of artificial restrictions should be left to a future DIP after the community has had some experience in using them.
+
 ### API Alias parameters
 
 Alias attribute to renamed parameters (templates and function ones).
