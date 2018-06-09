@@ -19,7 +19,7 @@ There have been many conversations on D's NewsGroup attempting to suggest named 
 
 Multiple library solutions have been attempted [1](https://forum.dlang.org/post/awjuoemsnmxbfgzhgkgx@forum.dlang.org) and [2](https://github.com/CyberShadow/ae/blob/master/utils/meta/args.d). Both of which do work but does not make the distinction between internal and public API arguments; which it cannot do without a lot more cruft.
 
-A [DIP](https://wiki.dlang.org/DIP88) (88) has been drafted, but never PR'd. Further work was done by Neia Neutuladh, but it has not been made public.
+A [DIP](https://wiki.dlang.org/DIP88) (88) has been drafted, but never PR'd. Further work was done by Neia Neutuladh, but it has not been made public. At the time of writing Yuxuan Shui has a draft [DIP](https://github.com/yshui/DIPs/blob/master/DIPs/DIP1xxx-YS.md) in the review queue that is much more limited.
 
 ## Contents
 * [Rationale](#rationale)
