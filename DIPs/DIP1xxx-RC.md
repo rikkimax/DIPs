@@ -47,7 +47,7 @@ At the template side, if the template arguments does not have any unnamed argume
 If a named argument does not have a default value, it must be assigned or it is an error.
 Named arguments can be in any order, they cannot have values depending on each other, default or otherwise.
 
-To get a tuple of all named parameter names, the trait ``__traits(getNamedParameters, T)`` can be used.
+To get a tuple of all named parameter names for (template instances or non-templated) functions, the trait ``__traits(getNamedParameters, T)`` can be used.
 
 Named arguments may be specified on structs, classes, unions, template blocks and mixin templates. As well as functions and methods. When used with structs, classes, unions or template blocks named arguments may be accessed by their identifier. E.g.
 
