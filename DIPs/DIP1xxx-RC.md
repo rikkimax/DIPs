@@ -57,9 +57,9 @@ struct MyWorld<string Name> {
 
 static assert(MyWorld!(Name:"Earth").Name) == "Earth");
 
-void hello(<string message="world!">) {
+void hello(<string message="World!">) {
 	import std.stdio;
-	writeln("hello ", message);
+	writeln("Hello ", message);
 }
 
 void main() {
