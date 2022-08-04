@@ -1,4 +1,4 @@
-# (Your DIP title)
+# Value type exceptions
 
 | Field           | Value                                                           |
 |-----------------|-----------------------------------------------------------------|
@@ -29,7 +29,7 @@ Both solutions may not be desirable. Instead this DIP aims to fulfill:
 
 - No (heap) memory allocations.
 - Uses the standard throw and try catch statements.
-- No runtime libraries or information that cannot be found in ROM, this allows it to be appropriete for betterC code and resource constrained systems.
+- No runtime libraries or information that is not directly offered to the user, this allows it to be appropriete for betterC code and resource constrained systems.
 - Does not introduce new syntax that is invasive in all code bases.
 
 Ideally it will allow the removal of ``@throw``, ``nothrow`` and default of any child of ``Throwable``.
@@ -172,6 +172,8 @@ If a non-``extern(D)`` function has its throw set, set via inferring and to have
 No syntax changes are required specific to this new mechanism, class based exceptions may have its implementation rewritten to take advantage of this instead of requiring a runtime library to handle throwing and catching.
 
 For structs this meachnism is aware of two members in the struct. Both of these serve the same purpose, they provide a string which contains a module name and line number. These are ``lastThrow`` and ``originalThrow``. If ``originalThrow`` member has been set to non-null and it is being thrown, the ``lastThrow`` member will instead be set. This means that a stack trace if generated will only contain two function calls at most. It cannot be used to create a full stack trace between the original throw and where it was last caught.
+
+These members will be set to a string stored in ROM, which should contain the fully qualified module name and line number. An example might be ``"my.mod.ule:102"``.
 
 This mechanism should be kept as cheap as possible, it is meant for catching near to where an exception is being thrown. This is typically used by library authors and may not be appropriete for application authors except in resource constrained systems. It should not require any heap allocations and must guarantee cleanup of any variables within a function scope as it goes up the call stack.
 
