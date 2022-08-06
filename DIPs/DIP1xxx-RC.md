@@ -49,16 +49,13 @@ This design has some roots in Herb Sutter's Zero-overhead deterministic exceptio
 Using the table that Herb Sutter came up with in his paper:
 
 A. “Error” flow is distinct from “success”
-
     Yes for both raising and handling via throw and catch.
     
 B. Error propagation and handling
-
     Yes for ignored only be explicitly writing a catch, unhandled error propagation is automated, and writing error-preserving error-neurtral function is simple.
     No for unhandled error propagation is visible unless the caller explicitly writes a throws attribute that is non-empty.
     
 C. Zero-overhead and determinism
-
     Yes for no heap (all stack allocated), statically typed no runtime information required apart from the tagged union id, space/time cost equal to return (tagged union, matching other values in original table) and it is fully deterministic (as per other items in the original table).
 
 Some of the criticism of this style of exception handling by Bjarne Stroustrup can be resolved by the infering of the attribute, no one needs to be aware that ``@throws`` attribute exists except when dealing with function pointers or if you do something wrong.
@@ -133,9 +130,9 @@ Infering will occur as part of semantic analysis regardless of what attributes e
 
 Equivalence checks type qualifiers for implicit conversion and in the class based mechanism is both parent and child aware. This means that ``Throwable`` if set in an attribute list will match an ``Exception`` should it be thrown.
 
-If a function body has not been provided it will infer ``@throws(Exception)``, this matches the current behavior. To be deprecated in the future is that this also applies to class and interface methods that are virtual.
+If a function body, class or interface virtual method has not been provided it will infer ``@throws(Exception)``, this matches the current behavior and is slated for removal as incorrect behavior.
 
-To get the throw set the trait ``__traits(getThrowSet, symbol)`` can be used, which can be used to generated try catch statements to remove types from the throw set.
+To get the throw set the trait ``__traits(getThrowSet, symbol)`` can be used, which can be used to generate try catch statements to remove types from the throw set.
 
 ### Try Catch
 
@@ -185,7 +182,7 @@ The ``nothrow`` keyword is recommended for deprecation in favor of the ``@throws
 
 The ``@throw`` attribute is recommended for deprecation in favor of the ``@throws(Exception)`` syntax as it is equivalent.
 
-After two years, the default infering of ``@throws(Exception)`` on all class methods is to be deprecated for removal. This incorrect behavior exists to prevent initial code breakage, and allows for it to be defered until code bases have been updated.
+After two years, the default infering of ``@throws(Exception)`` on all class, interface virtual methods and function pointers is to be deprecated for removal. This incorrect behavior exists to prevent initial code breakage, and allows for it to be defered until code bases have been updated.
 
 Potentially a breaking change for any user of a UDA which is called throws.
 
