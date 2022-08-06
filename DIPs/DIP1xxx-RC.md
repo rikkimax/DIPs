@@ -10,7 +10,9 @@
 
 ## Abstract
 
-Value type exceptions introduce a new mechanism for throwing exceptions that do not require heap allocations and should be caught close to where it is thrown.
+Value type exceptions is a new mechanism for handling alternative pathways in a code base that do not require heap memory allocations or runtime machinery to perform.
+It is designed around a new attribute which describes what exceptions (both class and struct based) that get thrown from within a function.
+Infering of this attribute is paramount to prevent excessive writing and complaints by the compiler.
 
 ## Contents
 * [Rationale](#rationale)
@@ -42,7 +44,7 @@ Alternative to exception syntax and mechanisms is that of erroneous returns or o
 
 The mechanism is implemented as a tagged union. This is the most direct comparison to comparable error methods in terms of performance that should be expected.
 
-This design has some roots in Herb Sutter's Zero-overhead deterministic exceptions papers and further attributes can be seen by Emil Dotchevski modification of the mechanism.
+This design has some roots in Herb Sutter's Zero-overhead deterministic exceptions paper and further attributes can be seen by Emil Dotchevski modification of the mechanism.
 
 Using the table that Herb Sutter came up with in his paper:
 
@@ -65,9 +67,9 @@ Some of the criticism of this style of exception handling by Bjarne Stroustrup c
 
 This DIP adds a new attribute, trait and a mechanism for throwing and catching exceptions.
 
-The attribute is represented by a set internally to the compiler storing types. Valid types are structs and classes or interfaces that inherit from Throwable.
+The attribute is represented by a set internally to the compiler storing types. Valid types are structs, classes or interfaces that inherit from Throwable.
 
-All functions will infer the attribute automatically, and will error if it does not match the attribute if provided with a list set.
+All functions will infer the attribute automatically, and will error if it does not match the attribute if provided with a set.
 
 ```d
 int add(int x, int y) {
@@ -100,7 +102,7 @@ int add2(int x, int y) {
 
 In the above example ``add`` will have the attribute set as ``@throws(MyException)``, and ``add2`` will have ``@throws()``. This is because ``add2`` catches the exception in all code paths it can be removed from the set.
 
-While classes are supported by the throws attribute and validation does occur, it is very permissive and should not affect any existing code.
+While classes are supported by the throws attribute and validation does occur, it is very permissive and should not affect existing code.
 
 Struct based exceptions must be copied not moved, to allow for reference counting semantics to be available for any heap allocations that may have been required for member data.
 
@@ -129,11 +131,11 @@ All functions without the ``@throws`` attribute with an argument list will defau
 
 Infering will occur as part of semantic analysis regardless of what attributes exist. If the attribute has been set and is not equivalent the compiler will error. This has occured due to programmer error.
 
-Equivalence checks ignore type qualifiers and in the class based mechanism is both parent and child aware. This means that ``Throwable`` if set in an attribute list will match an ``Exception`` should it be thrown.
+Equivalence checks type qualifiers for implicit conversion and in the class based mechanism is both parent and child aware. This means that ``Throwable`` if set in an attribute list will match an ``Exception`` should it be thrown.
 
-If a function body has not been provided it will infer ``@throws(Exception)``, this matches the current behavior.
+If a function body has not been provided it will infer ``@throws(Exception)``, this matches the current behavior. To be deprecated in the future is that this also applies to class and interface methods that are virtual.
 
-To get the throw set the trait ``__traits(getThrowSet)`` can be used, which via some CTFE code and a string mixin will allow to catch any thrown exception.
+To get the throw set the trait ``__traits(getThrowSet, symbol)`` can be used, which can be used to generated try catch statements to remove types from the throw set.
 
 ### Try Catch
 
@@ -163,11 +165,11 @@ int caller() /* @throws() */ {
 
 ### Mechanism
 
-A new exception throwing and catching mechanism is being introduced in this DIP that leverages the new ``@throws`` attribute.
+A new exception mechanism for throwing and catching is introduced in this DIP that leverages the new ``@throws`` attribute.
 
 The return type of all D functions that have a throws set that is non-empty with struct members has been modified to become equivalent to a tagged union.
 
-If a non-``extern(D)`` function has its throw set, set via inferring and to have struct members in the throws set it is an error. This is due to modifications to the function signature not being taken into account by other languages.
+If a non-``extern(D)`` function has its members in its throw set which was set via inferring and to have struct members in the throws set it is an error. This is due to modifications in the function signature that cannot be represented by other languages.
 
 No syntax changes are required specific to this new mechanism, class based exceptions may have its implementation rewritten to take advantage of this instead of requiring a runtime library to handle throwing and catching.
 
@@ -182,6 +184,8 @@ This mechanism should be kept as cheap as possible, it is meant for catching nea
 The ``nothrow`` keyword is recommended for deprecation in favor of the ``@throws()`` syntax as it is equivalent.
 
 The ``@throw`` attribute is recommended for deprecation in favor of the ``@throws(Exception)`` syntax as it is equivalent.
+
+After two years, the default infering of ``@throws(Exception)`` on all class methods is to be deprecated for removal. This incorrect behavior exists to prevent initial code breakage, and allows for it to be defered until code bases have been updated.
 
 Potentially a breaking change for any user of a UDA which is called throws.
 
