@@ -34,7 +34,7 @@ Both solutions may not be desirable. Instead this DIP aims to fulfill:
 - No runtime libraries or information that is not directly offered to the user, this allows it to be appropriete for betterC code and resource constrained systems.
 - Does not introduce new syntax that is invasive in all code bases.
 
-Ideally it will allow the removal of ``@throw``, ``nothrow`` and default of any child of ``Throwable``.
+Ideally it will allow the removal of ``throw``, ``nothrow`` and default of any child of ``Throwable``.
 
 ## Prior Work
 
@@ -180,7 +180,7 @@ This mechanism should be kept as cheap as possible, it is meant for catching nea
 
 The ``nothrow`` keyword is recommended for deprecation in favor of the ``@throws()`` syntax as it is equivalent.
 
-The ``@throw`` attribute is recommended for deprecation in favor of the ``@throws(Exception)`` syntax as it is equivalent.
+The ``throw`` attribute is recommended for deprecation in favor of the ``@throws(Exception)`` syntax as it is equivalent.
 
 After two years, the default infering of ``@throws(Exception)`` on all class, interface virtual methods and function pointers is to be deprecated for removal. This incorrect behavior exists to prevent initial code breakage, and allows for it to be defered until code bases have been updated.
 
