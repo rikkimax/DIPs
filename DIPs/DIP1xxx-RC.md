@@ -36,6 +36,8 @@ Both solutions may not be desirable. Instead this DIP aims to fulfill:
 
 Ideally it will allow the removal of ``throw``, ``nothrow`` and default of any child of ``Throwable``.
 
+These restrictions allow for exceptions to work on GPU's in compute situations where exception handling and function pointers do not work.
+
 ## Prior Work
 
 A key feature of the ``@throws`` attribute is that it will be typically inferred. This is contrary to languages like Java with its checked exceptions which rely heavily on IDE support to automatically set what goes into the list.
