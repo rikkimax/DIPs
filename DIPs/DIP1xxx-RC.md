@@ -62,6 +62,10 @@ C. Zero-overhead and determinism
 
 Some of the criticism of this style of exception handling by Bjarne Stroustrup can be resolved by the infering of the attribute, no one needs to be aware that ``@throws`` attribute exists except when dealing with function pointers or if you do something wrong.
 
+TODO: all the above really does not read well.
+
+TODO: [Zig](https://ziglang.org/documentation/0.9.1/#Errors)
+
 ## Description
 
 This DIP adds a new attribute, trait and a mechanism for throwing and catching exceptions.
@@ -136,6 +140,8 @@ If a function body, class or interface virtual method has not been provided it w
 
 To get the throw set the trait ``__traits(getThrowSet, symbol)`` can be used, which can be used to generate try catch statements to remove types from the throw set.
 
+It is not an error to provide exception types in the ``@throws`` attribute without a corresponding throw.
+
 ### Try Catch
 
 The ``@throws`` attribute is a set. The way to add or remove values is by throwing and catching exceptions.
@@ -162,6 +168,8 @@ int caller() /* @throws() */ {
 }
 ```
 
+Catching all exceptions is not a solved problem, but may be solved in the future with pattern matching.
+
 ### Mechanism
 
 A new exception mechanism for throwing and catching is introduced in this DIP that leverages the new ``@throws`` attribute.
@@ -186,7 +194,7 @@ The ``throw`` attribute is recommended for deprecation in favor of the ``@throws
 
 After two years, the default infering of ``@throws(Exception)`` on all class, interface virtual methods and function pointers is to be deprecated for removal. This incorrect behavior exists to prevent initial code breakage, and allows for it to be defered until code bases have been updated.
 
-Potentially a breaking change for any user of a UDA which is called throws.
+Potentially a breaking change for any user of a UDA which is called throws as this should become disallowed.
 
 ## Reference
 
