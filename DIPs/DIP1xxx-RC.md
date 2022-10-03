@@ -184,6 +184,8 @@ For structs this meachnism is aware of two members in the struct. Both of these 
 
 These members will be set to a string stored in ROM, which should contain the fully qualified module name and line number. An example might be ``"my.mod.ule:102"``.
 
+If a value type exception is not caught in a function, it will be automatically rethrown by the compiler in the caller function, however it won't change ``lastThrow`` member if it exists.
+
 This mechanism should be kept as cheap as possible, it is meant for catching near to where an exception is being thrown. This is typically used by library authors and may not be appropriete for application authors except in resource constrained systems. It should not require any heap allocations and must guarantee cleanup of any variables within a function scope as it goes up the call stack.
 
 ## Breaking Changes and Deprecations
