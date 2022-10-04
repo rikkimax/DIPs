@@ -107,7 +107,7 @@ In the above example ``add`` will have the attribute set as ``@throws(MyExceptio
 
 While classes are supported by the throws attribute and validation does occur, it is very permissive and should not affect existing code.
 
-Struct based exceptions must be copied not moved, to allow for reference counting semantics to be available for any heap allocations that may have been required for member data.
+Struct based exceptions must be copied not moved, this is in reference to copy constructors and destructors required for member data, memory integrity for use in reference counting. It does not prevent optimizations where the calls are unnecessary for memory consistency.
 
 ### Grammar
 
@@ -146,7 +146,9 @@ It is not an error to provide exception types in the ``@throws`` attribute witho
 
 The ``@throws`` attribute is a set. The way to add or remove values is by throwing and catching exceptions.
 
-If you attempt to catch an exception that is not represented in the throws set, a warning should be given. This is a potentially unnecessary path way or worse an undocumented one.
+If you attempt to catch an exception that is not represented in the throws set, a warning should be given. This is a potentially unnecessary path way or worse an undocumented one. If you are using conditional compilation (CTFE generated code, or versions) and you receive this warning, you should explicitly set the throws set with all possible exceptions instead of relying on inferation.
+
+For classes if an exception is represented in the throw set but it is not a parent of or equal to any of the entries, no entries can be removed. Due to potential of unknown children still being able to be thrown.
 
 Example which uses infering and adding plus removing an exception from the set.
 
