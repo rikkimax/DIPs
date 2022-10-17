@@ -176,15 +176,17 @@ Catching all exceptions is not a solved problem, but may be solved in the future
 
 A new exception mechanism for throwing and catching is introduced in this DIP that leverages the new ``@throws`` attribute.
 
-The return type of all D functions that have a throws set that is non-empty with struct members has been modified to become equivalent to a tagged union.
+The return type of all D functions that have a throws set that is non-empty with struct members has been modified to become equivalent to a tagged union. However unlike ordinary tagged unions, the tag value is not based upon an offset into the list of possible choices. Instead it should be based upon an integral value that the compiler can generate based upon the symbol that is independent of where it is being used such as a hash of a fully qualified name.
 
 If a non-``extern(D)`` function has its members in its throw set which was set via inferring and to have struct members in the throws set it is an error. This is due to modifications in the function signature that cannot be represented by other languages.
 
 No syntax changes are required specific to this new mechanism, class based exceptions may have its implementation rewritten to take advantage of this instead of requiring a runtime library to handle throwing and catching.
 
-For structs this meachnism is aware of two members in the struct. Both of these serve the same purpose, they provide a string which contains a module name and line number. These are ``lastThrow`` and ``originalThrow``. If ``originalThrow`` member has been set to non-null and it is being thrown, the ``lastThrow`` member will instead be set. This means that a stack trace if generated will only contain two function calls at most. It cannot be used to create a full stack trace between the original throw and where it was last caught.
+For structs this meachnism is aware of three members. Of these members, two serve the same purpose, for identifing throwing locations. The third functions as the tag value of the tagged union and accounts for the non-zero size of structs and allows getting the tag used to identifier the type.
 
-These members will be set to a string stored in ROM, which should contain the fully qualified module name and line number. An example might be ``"my.mod.ule:102"``.
+The throwing locations members are ``lastThrow`` and ``originalThrow``. If ``originalThrow`` member has been set to non-null and it is being thrown, the ``lastThrow`` member will be set instead. This means that a stack trace if generated will only contain two function calls at most. It cannot be used to create a full stack trace between the original throw and where it was last caught. These members will be set to a string stored in ROM, which should contain the fully qualified module name and line number. An example might be ``"my.mod.ule:102"``.
+
+The tag value uses the member name of ``tag``. It must be either a ``uint`` or a ``ulong`` and it has be the first field. The purpose of this field is to allow structs to be effectively zero sized while copying up the call stack. This may initially be perceived to be useless, but it does have optimization potential. For uncaught value type exceptions, you can use a single else block to rethrow any that do not require copy constructors, destructors or postblits to be called without inspection of the data being rethrown.
 
 If a value type exception is not caught in a function, it will be automatically rethrown by the compiler in the caller function, however it won't change ``lastThrow`` member if it exists.
 
