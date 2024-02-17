@@ -62,6 +62,8 @@ C. Zero-overhead and determinism
 
 Some of the criticism of this style of exception handling by Bjarne Stroustrup can be resolved by the infering of the attribute, no one needs to be aware that ``@throws`` attribute exists except when dealing with function pointers or if you do something wrong.
 
+Another designer of exceptional behavior mechanisms is Joe Duffy, who works on Midori, in their [article](https://joeduffyblog.com/2016/02/07/the-error-model/) on error models they covered many different options including aspects of this article. Of particular note is the concept of ``try`` ``else`` expression. Which is used to expressly annotate that an expression throws, and should it throw decide what to do (including assert out). This has benefits over a ``try`` ``catch``, since you will not be able to do other things inside the try statement block.
+
 TODO: all the above really does not read well.
 
 TODO: [Zig](https://ziglang.org/documentation/0.9.1/#Errors)
